@@ -2,10 +2,12 @@ package no.uib.inf101.sem2.model;
 
 import no.uib.inf101.sem2.controller.ControllableAsteroidModel;
 import no.uib.inf101.sem2.model.Characters.Asteroid;
+import no.uib.inf101.sem2.model.Characters.BaseCharacter;
 import no.uib.inf101.sem2.model.Characters.Player;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 import no.uib.inf101.sem2.view.ViewableAsteroidsModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAsteroidModel {
@@ -13,14 +15,24 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     private final int playerLives;
     private final Player player;
     private final GameState gameState;
-    private List<Asteroid> adversaryList;
+    private List<BaseCharacter> adversaryList;
 //    private double deltaTime;
 
     public AsteroidsModel() {
         this.playerScore = 0;
         this.playerLives = 3;
-        this.player = new Player(new Vector2(300, 300));
+        this.player = new Player(new Vector2(200, 200));
         this.gameState = GameState.ACTIVE_GAME;
+        this.adversaryList = new ArrayList<>();
+        BaseCharacter asteroid1 = new Asteroid(new Vector2(300, 100), new Vector2(-15, -20));
+        BaseCharacter asteroid2 = new Asteroid(new Vector2(600, 150), new Vector2(10, -10));
+        BaseCharacter asteroid3 = new Asteroid(new Vector2(300, 400), new Vector2(5, 10));
+
+        adversaryList.add(asteroid1);
+        adversaryList.add(asteroid2);
+        adversaryList.add(asteroid3);
+
+        System.out.println(adversaryList);
 //        this.asteroidList = null;
     }
 
@@ -30,8 +42,17 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     }
 
     @Override
+    public BaseCharacter getPlayerShip() {
+        return player;
+    }
+    @Override
+    public List<BaseCharacter> getAdversaryList() {
+        return adversaryList;
+    }
+
+    @Override
     public void accelerateShip(double deltaTime) {
-        this.player.accelerate(new Vector2(0, 2f), deltaTime);
+        this.player.accelerate(new Vector2(0, -10f), deltaTime);
     }
 
     @Override
@@ -48,11 +69,15 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     public void update(double deltaTime) {
         this.player.move(deltaTime);
 
-        for (Asteroid asteroid : adversaryList) {
+        for (BaseCharacter asteroid : adversaryList) {
             asteroid.move(deltaTime);
         }
 
         System.out.println(player.getVelocity());
+    }
 
+    @Override
+    public int getScore() {
+        return this.playerScore;
     }
 }

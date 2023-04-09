@@ -1,6 +1,6 @@
 package no.uib.inf101.sem2.model.Utils;
 
-/** Record class intended to store a position, velocity in 2d space.
+/** Record class intended to represent at 2d vector. Used to store position and velocity primarily.
  * @param x
  * @param y
  */

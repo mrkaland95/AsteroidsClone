@@ -2,8 +2,6 @@ package no.uib.inf101.sem2.model.Characters;
 
 import no.uib.inf101.sem2.model.Utils.Vector2;
 
-import java.awt.*;
-
 /*
 Base class for the player and computer controlled character classes.
 
@@ -11,7 +9,7 @@ The reason for using an abstract class, is because these classes share a lot of 
  */
 
 
-public abstract class baseCharacter {
+public abstract class BaseCharacter {
     private Vector2 position;
     private Vector2 velocity;
     private float angle;
@@ -24,7 +22,7 @@ public abstract class baseCharacter {
 //        this.velocity = new Vector2(0, 0);
 //    }
 
-
+    public abstract float[][] getShape();
     public Vector2 getPosition() {
         return this.position;
     }
@@ -41,7 +39,7 @@ public abstract class baseCharacter {
         this.velocity = velocity;
     }
 
-    public boolean collidedWith(baseCharacter character) {
+    public boolean collidedWith(BaseCharacter character) {
         // TODO implement this
         return false;
     }
