@@ -9,8 +9,6 @@ public class Player extends baseCharacter {
 
     public Player(Vector2 startPosition) {
         this.setPosition(startPosition);
+        this.setVelocity(new Vector2(0, 0));
     }
-
-
-
 }

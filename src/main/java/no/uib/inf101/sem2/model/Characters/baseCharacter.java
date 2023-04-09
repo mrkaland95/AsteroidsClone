@@ -11,7 +11,7 @@ The reason for using an abstract class, is because these classes share a lot of 
  */
 
 
-public abstract class baseCharacter implements IBaseCharacter {
+public abstract class baseCharacter {
     private Vector2 position;
     private Vector2 velocity;
     private float angle;
@@ -24,36 +24,35 @@ public abstract class baseCharacter implements IBaseCharacter {
 //        this.velocity = new Vector2(0, 0);
 //    }
 
-    @Override
+
     public Vector2 getPosition() {
         return this.position;
     }
 
-    @Override
     public void setPosition(Vector2 position) {
         this.position = position;
     }
 
-    @Override
     public Vector2 getVelocity() {
         return velocity;
     }
 
-    @Override
     public void setVelocity(Vector2 velocity) {
         this.velocity = velocity;
     }
 
-    public boolean collidedWith(IBaseCharacter character) {
+    public boolean collidedWith(baseCharacter character) {
         // TODO implement this
         return false;
     }
 
-    @Override
-    public void update(double deltaTime) {
-        // Updates the position of a character every frame by
-        double newX = position.x() + velocity.x() * deltaTime;
-        double newY = position.y() + velocity.y() * deltaTime;
-        this.position = new Vector2((float) newX,(float) newY);
+    public void move(double deltaTime) {
+        this.position = Vector2.translateOverTime(this.position, this.velocity, deltaTime);
     }
+
+    public void accelerate(Vector2 acceleration, double deltaTime) {
+        this.velocity = Vector2.translateOverTime(this.velocity, acceleration, deltaTime);
+    }
+
+    public void rotate() {}
 }

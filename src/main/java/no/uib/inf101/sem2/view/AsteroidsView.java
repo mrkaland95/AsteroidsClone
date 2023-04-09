@@ -15,15 +15,15 @@ public class AsteroidsView extends JPanel {
     private final int windowHeight = 700;
     private final Color backgroundColor = new Color(0, 0, 0);
     private final Color frameColor = new Color(1, 1, 1);
-    private final Instant lastUpdateTime;
 
 
     public AsteroidsView(ViewableAsteroidsModel asteroidsModel) {
-        this.asteroidsModel = asteroidsModel;
-
+        // Set parameters for the window.
+        this.setFocusable(true);
         this.setPreferredSize(new Dimension(windowWidth, windowHeight));
-        this.lastUpdateTime = Instant.now();
         this.setBackground(backgroundColor);
+
+        this.asteroidsModel = asteroidsModel;
     }
 
     @Override
@@ -31,8 +31,9 @@ public class AsteroidsView extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         Rectangle test = this.getBounds();
-        System.out.println(test.height);
-        System.out.println(test.width);
+        drawGameBorder(g2);
+//        System.out.println(test.height);
+//        System.out.println(test.width);
 
 //        gameLoop();
 //        Shape shape = new Point();
@@ -43,18 +44,9 @@ public class AsteroidsView extends JPanel {
 
     }
 
-
-//    private void gameLoop() {
-//        Instant lastUpdateTime = Instant.now();
-//
-//        Instant currentTime = Instant.now();
-//        long deltaTimeMillis = Duration.between(lastUpdateTime, currentTime).toMillis();
-//        double deltaTime = deltaTimeMillis / 1000d;
-//
-//            lastUpdateTime = currentTime;
-//        }
-//
-//    }
+    private void drawGameBorder(Graphics2D g2d) {
+        this.getHeight();
+    }
 
 
 }
