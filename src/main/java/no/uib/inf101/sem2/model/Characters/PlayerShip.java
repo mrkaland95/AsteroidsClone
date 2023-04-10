@@ -5,12 +5,14 @@ import no.uib.inf101.sem2.model.Utils.Vector2;
 
 
 
-public class Player extends BaseCharacter {
+public class PlayerShip extends BaseCharacter {
+    private boolean accelerating;
 
-    public Player(Vector2 startPosition) {
+    public PlayerShip(Vector2 startPosition) {
         this.setPosition(startPosition);
         this.setVelocity(new Vector2(0, 0));
         this.setCurrentShape(getBaseShape());
+        this.accelerating = false;
     }
 
     protected float[][] getBaseShape() {
@@ -23,4 +25,12 @@ public class Player extends BaseCharacter {
 
         return shape;
     }
+    public boolean isAccelerating() {
+        return accelerating;
+    }
+
+    public void setAccelerating(boolean accelerating) {
+        this.accelerating = accelerating;
+    }
+
 }

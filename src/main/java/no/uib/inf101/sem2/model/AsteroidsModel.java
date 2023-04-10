@@ -3,7 +3,7 @@ package no.uib.inf101.sem2.model;
 import no.uib.inf101.sem2.controller.ControllableAsteroidModel;
 import no.uib.inf101.sem2.model.Characters.Asteroid;
 import no.uib.inf101.sem2.model.Characters.BaseCharacter;
-import no.uib.inf101.sem2.model.Characters.Player;
+import no.uib.inf101.sem2.model.Characters.PlayerShip;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 import no.uib.inf101.sem2.view.ViewableAsteroidsModel;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAsteroidModel {
     private int playerScore;
     private final int playerLives;
-    private final Player player;
+    private final PlayerShip player;
     private final GameState gameState;
     private List<BaseCharacter> adversaryList;
 //    private double deltaTime;
@@ -21,7 +21,7 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     public AsteroidsModel() {
         this.playerScore = 0;
         this.playerLives = 3;
-        this.player = new Player(new Vector2(200, 200));
+        this.player = new PlayerShip(new Vector2(200, 200));
         this.gameState = GameState.ACTIVE_GAME;
         this.adversaryList = new ArrayList<>();
 
@@ -67,11 +67,13 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void update(double deltaTime) {
+        float degreesRotatedPerSecond = 20f;
         this.player.move(deltaTime);
 
 //        this.playerScore += 1;
         for (BaseCharacter asteroid : adversaryList) {
             asteroid.move(deltaTime);
+            asteroid.rotateShapeBy(degreesRotatedPerSecond * (float) deltaTime);
         }
     }
 

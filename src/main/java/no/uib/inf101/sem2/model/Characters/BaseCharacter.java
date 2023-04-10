@@ -49,7 +49,6 @@ public abstract class BaseCharacter {
         float thrustY = (float) (acceleration * Math.sin(radians));
         this.velocity = Vector2.translateOverTime(this.velocity, new Vector2(thrustX, thrustY), deltaTime);
     }
-
     /** Method responsible for rotating the direction and shape a character is pointing towards.
      * 0/360 degrees is upwards.
      *
@@ -65,7 +64,6 @@ public abstract class BaseCharacter {
 
         Vector2 centerPoint = calculateCenter(this.currentShape);
         this.currentShape = rotateShape(this.currentShape, angle, centerPoint);
-        System.out.println(this.currentAngle);
     }
 
 

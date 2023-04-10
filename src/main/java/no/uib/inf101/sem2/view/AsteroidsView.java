@@ -32,16 +32,9 @@ public class AsteroidsView extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        Rectangle test = this.getBounds();
         drawGameBorder(g2);
         drawGame(g2);
         drawScore(g2);
-
-//        System.out.println(test.height);
-//        System.out.println(test.width);
-
-//        gameLoop();
-//        Shape shape = new Point();
     }
 
 

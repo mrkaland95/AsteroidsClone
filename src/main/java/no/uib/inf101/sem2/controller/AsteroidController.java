@@ -40,17 +40,20 @@ public class AsteroidController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        float rotationAngle = 10f;
+
         if (asteroidsModel.getGameState() == GameState.GAME_OVER) return;
 
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            asteroidsModel.rotateShip(calculateDeltaTime(), -10);
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            asteroidsModel.accelerateShip(calculateDeltaTime());
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            // Rotates the ship to the left.
+            asteroidsModel.rotateShip(calculateDeltaTime(), -rotationAngle);
         }
         else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            asteroidsModel.rotateShip(calculateDeltaTime(), 10);
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_UP) {
-            asteroidsModel.accelerateShip(calculateDeltaTime());
-//            asteroidsModel.update(calculateDeltaTime());
+            // Rotates the ship to the right.
+            asteroidsModel.rotateShip(calculateDeltaTime(), rotationAngle);
         }
         else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             // Shoot
