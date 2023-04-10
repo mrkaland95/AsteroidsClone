@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAsteroidModel {
-    private final int playerScore;
+    private int playerScore;
     private final int playerLives;
     private final Player player;
     private final GameState gameState;
@@ -24,6 +24,8 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         this.player = new Player(new Vector2(200, 200));
         this.gameState = GameState.ACTIVE_GAME;
         this.adversaryList = new ArrayList<>();
+
+        // Temp until the character factory is implemented properly.
         BaseCharacter asteroid1 = new Asteroid(new Vector2(300, 100), new Vector2(-15, -20));
         BaseCharacter asteroid2 = new Asteroid(new Vector2(600, 150), new Vector2(10, -10));
         BaseCharacter asteroid3 = new Asteroid(new Vector2(300, 400), new Vector2(5, 10));
@@ -32,8 +34,6 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         adversaryList.add(asteroid2);
         adversaryList.add(asteroid3);
 
-        System.out.println(adversaryList);
-//        this.asteroidList = null;
     }
 
     @Override
@@ -52,12 +52,14 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void accelerateShip(double deltaTime) {
-        this.player.accelerate(new Vector2(0, -10f), deltaTime);
+        this.player.accelerate(new Vector2(0, -50f), deltaTime);
     }
 
     @Override
-    public void rotateShip(double deltaTime) {
-
+    public void rotateShip(double deltaTime, float angle) {
+        System.out.println("Rotating ship by angle: " + angle);
+        System.out.println(this.player.getCurrentAngle());
+        this.player.rotateShapeBy(angle);
     }
 
     @Override
@@ -69,11 +71,10 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     public void update(double deltaTime) {
         this.player.move(deltaTime);
 
+//        this.playerScore += 1;
         for (BaseCharacter asteroid : adversaryList) {
             asteroid.move(deltaTime);
         }
-
-        System.out.println(player.getVelocity());
     }
 
     @Override

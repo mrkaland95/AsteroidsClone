@@ -12,17 +12,17 @@ The reason for using an abstract class, is because these classes share a lot of 
 public abstract class BaseCharacter {
     private Vector2 position;
     private Vector2 velocity;
-    private float angle;
-    private int size;
-    private int direction;
-//    private Shape shape;
+    private float[][] currentShape;
+    private float currentAngle;
+    private int sizeScalar;
+    abstract float[][] getBaseShape();
+    public float[][] getCurrentShape() {
+        return currentShape;
+    }
+    public void setCurrentShape(float[][] currentShape) {
+        this.currentShape = currentShape;
+    }
 
-//    public baseCharacter(Vector2 startPosition) {
-//        this.position = startPosition;
-//        this.velocity = new Vector2(0, 0);
-//    }
-
-    public abstract float[][] getShape();
     public Vector2 getPosition() {
         return this.position;
     }
@@ -52,5 +52,67 @@ public abstract class BaseCharacter {
         this.velocity = Vector2.translateOverTime(this.velocity, acceleration, deltaTime);
     }
 
-    public void rotate() {}
+    public void rotateShapeBy(float angle) {
+        this.currentAngle += angle;
+        Vector2 centerPoint = calculateCenter(this.currentShape);
+        this.currentShape = rotateShape(this.currentShape, angle, centerPoint);
+    }
+
+
+
+    /**
+     * ChatGPT was used for figuring this one out
+     * @param angle
+     */
+    private float[][] rotateShape(float[][] points, float angle, Vector2 centerPosition) {
+        float[][] rotatedPoints = new float[points.length][2];
+        double radians = Math.toRadians(angle);
+        float cosAngle = (float) Math.cos(radians);
+        float sinAngle = (float) Math.sin(radians);
+
+        for (int i = 0; i < points.length; i++) {
+            float dx = points[i][0] - centerPosition.x();
+            float dy = points[i][1] - centerPosition.y();
+            rotatedPoints[i][0] = centerPosition.x() + (cosAngle * dx - sinAngle * dy);
+            rotatedPoints[i][1] = centerPosition.y() + (sinAngle * dx + cosAngle * dy);
+        }
+
+        return rotatedPoints;
+    }
+
+    /**
+     * ChatGPT was partially used for making this one
+     * Calculates the center point of a shape, which point will be used to rotate around.
+     *
+     * @param points
+     */
+    private Vector2 calculateCenter(float[][] points) {
+        float[] center = {0, 0};
+
+        for (float[] point : points) {
+            center[0] += point[0];
+            center[1] += point[1];
+        }
+
+        center[0] /= points.length;
+        center[1] /= points.length;
+
+        return new Vector2(center[0], center[1]);
+    }
+
+    public float getCurrentAngle() {
+        return currentAngle;
+    }
+    public void setCurrentAngle(float currentAngle) {
+        this.currentAngle = currentAngle;
+    }
+
+    public int getSizeScalar() {
+        return sizeScalar;
+    }
+
+    public void setSizeScalar(int sizeScalar) {
+        this.sizeScalar = sizeScalar;
+    }
+
 }

@@ -10,9 +10,10 @@ public class Player extends BaseCharacter {
     public Player(Vector2 startPosition) {
         this.setPosition(startPosition);
         this.setVelocity(new Vector2(0, 0));
+        this.setCurrentShape(getBaseShape());
     }
 
-    public float[][] getShape() {
+    public float[][] getBaseShape() {
         float[][] shape = {
             {0f,  -10f},
             {10f,  10f},

@@ -17,7 +17,6 @@ public class Main {
 
         frame.setContentPane(asteroidsView);
 
-
         frame.pack();
         frame.setVisible(true);
     }

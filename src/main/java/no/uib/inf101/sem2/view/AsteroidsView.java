@@ -58,10 +58,9 @@ public class AsteroidsView extends JPanel {
     }
 
     private void drawScore(Graphics2D g2d) {
-        String score = "" + asteroidsModel.getScore();
-        Point2D point = new Point(this.getWidth() / 2, 20);
+        String score = "Score: " + asteroidsModel.getScore();
+        Point2D point = new Point(this.getWidth() / 2, 40);
         Inf101Graphics.drawCenteredString(g2d, score, point);
-
     }
 
 
@@ -70,7 +69,7 @@ public class AsteroidsView extends JPanel {
     }
 
     private void drawCharacter(Graphics2D g2d, BaseCharacter character) {
-        float[][] points = character.getShape();
+        float[][] points = character.getCurrentShape();
         int numPoints = points.length;
 
         float posX = character.getPosition().x();
@@ -80,6 +79,32 @@ public class AsteroidsView extends JPanel {
         int[] yPoints = Arrays.stream(points).mapToInt(point -> Math.round(point[1] + posY)).toArray();
         g2d.drawPolygon(xPoints, yPoints, numPoints);
     }
+
+
+    /**
+     * I know there is a method that already does this in "Inf101graphics", but you can't change the font or size
+     * in that one.
+     * @param g2d
+     * @param string
+     * @param point
+     */
+    private void drawCenteredString(Graphics2D g2d, String string, Point2D point) {
+        Font font = new Font("Arial", Font.BOLD, 40);
+        FontMetrics fontMetrics = g2d.getFontMetrics(font);
+
+        int textWidth = fontMetrics.stringWidth(string);
+        int textHeight = fontMetrics.getHeight();
+
+        int x = (int) ((point.getX() - textWidth) / 2);
+        int y = (int) ((point.getY() - textHeight) / 2);
+
+        g2d.setFont(font);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString(string, x, y);
+    }
+
+
+
 
 
 }
