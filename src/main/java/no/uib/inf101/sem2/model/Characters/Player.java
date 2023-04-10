@@ -13,7 +13,7 @@ public class Player extends BaseCharacter {
         this.setCurrentShape(getBaseShape());
     }
 
-    public float[][] getBaseShape() {
+    protected float[][] getBaseShape() {
         float[][] shape = {
             {0f,  -10f},
             {10f,  10f},

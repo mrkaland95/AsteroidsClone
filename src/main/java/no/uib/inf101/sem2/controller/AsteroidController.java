@@ -58,10 +58,14 @@ public class AsteroidController implements KeyListener {
 //        asteroidsView.repaint();
     }
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            asteroidsModel.accelerateShip(calculateDeltaTime());
+        }
+    }
 
 
-    private double calculateDeltaTime(){
+    private double calculateDeltaTime() {
         long currentTime = System.nanoTime();
         double deltaTime = (currentTime - lastUpdateTime) / 1e9; // Convert nanoseconds to seconds
         this.lastUpdateTime = currentTime;

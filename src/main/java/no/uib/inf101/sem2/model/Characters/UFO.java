@@ -17,7 +17,7 @@ public class UFO extends BaseCharacter {
 
 
     @Override
-    float[][] getBaseShape() {
+    protected float[][] getBaseShape() {
             // TODO implement this
         return new float[0][];
     }

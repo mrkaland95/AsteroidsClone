@@ -52,13 +52,11 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void accelerateShip(double deltaTime) {
-        this.player.accelerate(new Vector2(0, -50f), deltaTime);
+        this.player.accelerate(40f, deltaTime);
     }
 
     @Override
     public void rotateShip(double deltaTime, float angle) {
-        System.out.println("Rotating ship by angle: " + angle);
-        System.out.println(this.player.getCurrentAngle());
         this.player.rotateShapeBy(angle);
     }
 

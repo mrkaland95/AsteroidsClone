@@ -16,7 +16,7 @@ public class Asteroid extends BaseCharacter {
     }
 
     @Override
-    float[][] getBaseShape() {
+    protected float[][] getBaseShape() {
         float[][] points = {
             {0, 0},
             {10, 0},
