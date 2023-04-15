@@ -27,7 +27,7 @@ public record Vector2(float x, float y) {
     }
 
     public static Vector2 translateOverTime(Vector2 start, Vector2 shift, double deltaTime) {
-        // Updates the position of a character every frame by
+        // Updates the position of a character every frame by the given shift, multiplied by the deltatime.
         double newX = start.x() + shift.x() * deltaTime;
         double newY = start.y() + shift.y() * deltaTime;
         return new Vector2((float) newX,(float) newY);

@@ -25,6 +25,30 @@ public class PlayerShip extends BaseCharacter {
 
         return shape;
     }
+    public float[][] getFireShape() {
+        return new float[][]{
+            {0.5f, -1f},
+            {1f, 0f},
+            {0.5f, 1f},
+            {-0.5f, 1f},
+            {-1f, 0f},
+            {-0.5f, -1f},
+        };
+    }
+
+    @Override
+    public void accelerate(float acceleration, double deltaTime) {
+        // Beacuse the angle starts paralel to the x axis, we need to subtract by 90 degrees.
+        double radians = Math.toRadians(getCurrentAngle() - 90d);
+
+        float thrustX = (float) (acceleration * Math.cos(radians));
+        float thrustY = (float) (acceleration * Math.sin(radians));
+        setVelocity(Vector2.translateOverTime(getVelocity(), new Vector2(thrustX, thrustY), deltaTime));
+        // Sets the acceleration to true if the acceleration is greater or lesser than 0.
+        this.setAccelerating((acceleration != 0f));
+    }
+
+
     public boolean isAccelerating() {
         return accelerating;
     }
