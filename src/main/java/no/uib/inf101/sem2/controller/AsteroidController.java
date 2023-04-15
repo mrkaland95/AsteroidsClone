@@ -31,7 +31,7 @@ public class AsteroidController implements KeyListener {
 
         if (!asteroidsModel.getGameState().equals(GameState.ACTIVE_GAME)) return;
 
-        asteroidsModel.update(calculateDeltaTime());
+        asteroidsModel.update(Settings.getUpdateIntervalFloat());
         asteroidsView.repaint();
     }
 
@@ -45,25 +45,25 @@ public class AsteroidController implements KeyListener {
         if (asteroidsModel.getGameState() == GameState.GAME_OVER) return;
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            asteroidsModel.accelerateShip(calculateDeltaTime());
+            asteroidsModel.accelerateShip(Settings.getUpdateIntervalFloat());
         }
-        else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             // Rotates the ship to the left.
-            asteroidsModel.rotateShip(calculateDeltaTime(), -rotationAngle);
+            asteroidsModel.rotateShip(Settings.getUpdateIntervalFloat(), -rotationAngle);
         }
-        else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             // Rotates the ship to the right.
-            asteroidsModel.rotateShip(calculateDeltaTime(), rotationAngle);
+            asteroidsModel.rotateShip(Settings.getUpdateIntervalFloat(), rotationAngle);
         }
-        else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             // Shoot
         }
-//        asteroidsView.repaint();
+        asteroidsView.repaint();
     }
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            asteroidsModel.accelerateShip(calculateDeltaTime());
+            asteroidsModel.accelerateShip(Settings.getUpdateIntervalFloat());
         }
     }
 

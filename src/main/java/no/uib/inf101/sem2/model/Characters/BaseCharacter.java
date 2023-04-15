@@ -15,7 +15,17 @@ public abstract class BaseCharacter {
     private float[][] currentShape;
     private float currentAngle;
     private int sizeScalar;
+
+    /** Defines the base shape of the character, defined as points, which lines will be drawn between.
+     *  Default shape should be pointing upwards, if relevant.
+     * @return
+     */
     protected abstract float[][] getBaseShape();
+
+    /**
+     * Gets the state of the current shape of the object, including it's rotated state.
+     * @return
+     */
     public float[][] getCurrentShape() {
         return currentShape;
     }
@@ -38,9 +48,33 @@ public abstract class BaseCharacter {
         // TODO implement this
         return false;
     }
-    public void move(double deltaTime) {
+    public void move(double deltaTime, int mapWidth, int mapHeight) {
         this.position = Vector2.translateOverTime(this.position, this.velocity, deltaTime);
+        this.wrapAround(mapWidth, mapHeight);
+
     }
+    public void wrapAround(int mapWidth, int mapHeight) {
+        float posX = position.x();
+        float posY = position.y();
+
+        if (posX < 0) {
+            posX += mapWidth;
+        } else if (posX > mapWidth) {
+            posX -= mapWidth;
+        }
+
+        if (posY < 0) {
+            posY += mapHeight;
+        } else if (posY > mapHeight) {
+            posY -= mapHeight;
+        }
+        this.setPosition(new Vector2(posX, posY));
+    }
+
+
+
+
+
     public void accelerate(float acceleration, double deltaTime) {
 
         double radians = Math.toRadians(currentAngle - 90f);
@@ -61,18 +95,22 @@ public abstract class BaseCharacter {
         if (this.currentAngle < 0) {
             this.currentAngle += 360;
         }
-
+        // Calculates the center point of the shape and rotates the shape relative to that point.
         Vector2 centerPoint = calculateCenter(this.currentShape);
         this.currentShape = rotateShape(this.currentShape, angle, centerPoint);
     }
 
+    public Vector2 getShapeCenter() {
+        float[][] points = getCurrentShape();
+        return calculateCenter(points);
+    }
 
 
     /** Utility method used to rotate the points in a shape by a given angle.
      * ChatGPT was used for figuring this one out
      * @param angle
      */
-    private float[][] rotateShape(float[][] points, float angle, Vector2 centerPosition) {
+    private static float[][] rotateShape(float[][] points, float angle, Vector2 centerPosition) {
         float[][] rotatedPoints = new float[points.length][2];
         double radians = Math.toRadians(angle);
         float cosAngle = (float) Math.cos(radians);
@@ -84,7 +122,6 @@ public abstract class BaseCharacter {
             rotatedPoints[i][0] = centerPosition.x() + (cosAngle * dx - sinAngle * dy);
             rotatedPoints[i][1] = centerPosition.y() + (sinAngle * dx + cosAngle * dy);
         }
-
         return rotatedPoints;
     }
 
@@ -93,7 +130,7 @@ public abstract class BaseCharacter {
      *
      * @param points
      */
-    private Vector2 calculateCenter(float[][] points) {
+    private static Vector2 calculateCenter(float[][] points) {
         float[] center = {0, 0};
 
         for (float[] point : points) {
@@ -116,11 +153,9 @@ public abstract class BaseCharacter {
     public void setCurrentAngle(float currentAngle) {
         this.currentAngle = currentAngle;
     }
-
     public int getSizeScalar() {
         return sizeScalar;
     }
-
     public void setSizeScalar(int sizeScalar) {
         this.sizeScalar = sizeScalar;
     }
