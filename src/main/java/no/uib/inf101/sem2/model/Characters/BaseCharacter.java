@@ -16,8 +16,9 @@ public abstract class BaseCharacter {
     private float currentAngle;
     private int sizeScalar;
 
-    /** Defines the base shape of the character, defined as points, which lines will be drawn between.
-     *  Default shape should be pointing upwards, if relevant.
+    /** Defines the base shape of the character, defined as points,
+     *  where lines will be drawn between these points to render a shape.
+     *  The shape should be drawn upwards/"North" if not symmetrical.
      * @return
      */
     protected abstract float[][] getBaseShape();
@@ -44,6 +45,21 @@ public abstract class BaseCharacter {
     public void setVelocity(Vector2 velocity) {
         this.velocity = velocity;
     }
+    /** Gets the angle the character is pointing towards.
+     * @return
+     */
+    public float getCurrentAngle() {
+        return currentAngle;
+    }
+    public void setCurrentAngle(float currentAngle) {
+        this.currentAngle = currentAngle;
+    }
+    public int getSizeScalar() {
+        return sizeScalar;
+    }
+    public void setSizeScalar(int sizeScalar) {
+        this.sizeScalar = sizeScalar;
+    }
     public boolean collidedWith(BaseCharacter character) {
         // TODO implement this
         return false;
@@ -51,8 +67,13 @@ public abstract class BaseCharacter {
     public void move(double deltaTime, int mapWidth, int mapHeight) {
         this.position = Vector2.translateOverTime(this.position, this.velocity, deltaTime);
         this.wrapAround(mapWidth, mapHeight);
-
     }
+
+    /**
+     *  Method responsible for wrapping the character around to the other side of the map if it hits the map border.
+     * @param mapWidth The map border width
+     * @param mapHeight The map border height
+     */
     public void wrapAround(int mapWidth, int mapHeight) {
         float posX = position.x();
         float posY = position.y();
@@ -71,25 +92,25 @@ public abstract class BaseCharacter {
         this.setPosition(new Vector2(posX, posY));
     }
 
-
-
-
-
+    /**
+     * Accelerates the character by the given amount per second.
+     * @param acceleration The acceleration amount.
+     * @param deltaTime The time since the last gametick.
+     */
     public void accelerate(float acceleration, double deltaTime) {
-
         double radians = Math.toRadians(currentAngle - 90f);
 
         float thrustX = (float) (acceleration * Math.cos(radians));
         float thrustY = (float) (acceleration * Math.sin(radians));
         this.velocity = Vector2.translateOverTime(this.velocity, new Vector2(thrustX, thrustY), deltaTime);
     }
+
     /** Method responsible for rotating the direction and shape a character is pointing towards.
      * 0/360 degrees is upwards.
      *
      * @param angle The angle that the shape of the character should be rotated by.
      */
     public void rotateShapeBy(float angle) {
-
         // Limits to a number between 0-360 degrees.
         this.currentAngle = (this.currentAngle + angle) % 360;
         if (this.currentAngle < 0) {
@@ -125,6 +146,8 @@ public abstract class BaseCharacter {
         return rotatedPoints;
     }
 
+
+
     /** Utility method for calculating the center point of a shape.
      * ChatGPT was partially used for making this one
      *
@@ -143,21 +166,4 @@ public abstract class BaseCharacter {
 
         return new Vector2(center[0], center[1]);
     }
-
-    /**
-     * @return
-     */
-    public float getCurrentAngle() {
-        return currentAngle;
-    }
-    public void setCurrentAngle(float currentAngle) {
-        this.currentAngle = currentAngle;
-    }
-    public int getSizeScalar() {
-        return sizeScalar;
-    }
-    public void setSizeScalar(int sizeScalar) {
-        this.sizeScalar = sizeScalar;
-    }
-
 }

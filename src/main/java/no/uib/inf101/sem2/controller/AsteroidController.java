@@ -58,6 +58,7 @@ public class AsteroidController implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             // Shoot
         }
+
         asteroidsView.repaint();
     }
     @Override

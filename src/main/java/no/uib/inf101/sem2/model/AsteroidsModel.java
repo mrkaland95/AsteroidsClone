@@ -19,9 +19,9 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     private final PlayerShip player;
     private final GameState gameState;
     private final CharacterFactory characterFactory;
-    private List<Asteroid> asteroidList;
-    private List<BaseCharacter> UFOList;
-    private List<Bullet> bulletList;
+    private List<BaseCharacter> UFOList = new ArrayList<>();
+    private List<Asteroid> asteroidList = new ArrayList<>();
+    private List<Bullet> bulletList = new ArrayList<>();
     private final int mapWidth;
     private final int mapHeight;
 
@@ -32,7 +32,6 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         this.playerLives = 3;
         this.player = new PlayerShip(new Vector2(200, 200));
         this.gameState = GameState.ACTIVE_GAME;
-        this.asteroidList = new ArrayList<>();
         this.mapWidth = 1000;
         this.mapHeight = 1000;
 
@@ -88,10 +87,19 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
             asteroid.move(deltaTime, mapWidth, mapHeight);
             asteroid.rotateShapeBy(asteroid.getDegreesOfRotationPerSecond() * Settings.getIntervalMillis() / 1000f);
         }
+
+        for (Bullet bullet : bulletList) {
+            bullet.move(deltaTime, mapWidth, mapHeight);
+        }
     }
 
     @Override
     public int getScore() {
         return this.playerScore;
+    }
+
+    @Override
+    public List<Bullet> getBulletList() {
+        return bulletList;
     }
 }

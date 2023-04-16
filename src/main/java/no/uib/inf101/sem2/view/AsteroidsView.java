@@ -44,6 +44,7 @@ public class AsteroidsView extends JPanel {
 
     private void drawGame(Graphics2D g2d) {
         g2d.setColor(Color.WHITE);
+        // Enables "Anti-Aliasing" for the shapes, making them look less jagged.
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         PlayerShip playerShip = asteroidsModel.getPlayerShip();
 
@@ -83,14 +84,12 @@ public class AsteroidsView extends JPanel {
 
 
     private void drawFlame(Graphics2D g2d, PlayerShip playerShip) {
-        if (playerShip.isAccelerating()) {
-            float[][] fireShape = playerShip.getFireShape();
-            float[][] translatedFireShape = translateShape(fireShape, playerShip.getPosition());
+        float[][] fireShape = playerShip.getFireShape();
+        float[][] translatedFireShape = translateShape(fireShape, playerShip.getPosition());
 
-            int[] fireXPoints = Arrays.stream(translatedFireShape).mapToInt(point -> Math.round(point[0])).toArray();
-            int[] fireYPoints = Arrays.stream(translatedFireShape).mapToInt(point -> Math.round(point[1])).toArray();
-            g2d.drawPolygon(fireXPoints, fireYPoints, fireShape.length);
-        }
+        int[] fireXPoints = Arrays.stream(translatedFireShape).mapToInt(point -> Math.round(point[0])).toArray();
+        int[] fireYPoints = Arrays.stream(translatedFireShape).mapToInt(point -> Math.round(point[1])).toArray();
+        g2d.drawPolygon(fireXPoints, fireYPoints, fireShape.length);
     }
 
     private float[][] translateShape(float[][] shape, Vector2 translation) {

@@ -15,7 +15,6 @@ public class Main {
         new AsteroidController(asteroidsModel, asteroidsView);
         JFrame frame = new JFrame(WINDOW_TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         frame.setContentPane(asteroidsView);
 
         frame.pack();
