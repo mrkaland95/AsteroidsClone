@@ -16,6 +16,14 @@ public class AsteroidController implements KeyListener {
     private long lastUpdateTime;
     Timer timer;
 
+    // These are used to allow multiple keys to be pressed at the same time.
+    // So for example the player is able to shoot and rotate at the same time.
+    boolean leftArrowPressed = false;
+    boolean rightArrowPressed = false;
+    boolean upArrowPressed = false;
+    boolean spaceBarPressed = false;
+
+
     public AsteroidController(AsteroidsModel asteroidModel, AsteroidsView asteroidsView) {
         this.asteroidsModel = asteroidModel;
         this.asteroidsView = asteroidsView;
@@ -28,10 +36,28 @@ public class AsteroidController implements KeyListener {
     }
 
     private void performTick(ActionEvent event) {
-
         if (!asteroidsModel.getGameState().equals(GameState.ACTIVE_GAME)) return;
 
-        asteroidsModel.update(Settings.getUpdateIntervalFloat());
+        float rotationAngle = 5f;
+        float updateInterval = Settings.getUpdateIntervalFloat();
+
+
+        // Accelerates the player's ship.
+        if (upArrowPressed) {
+            asteroidsModel.accelerateShip(updateInterval);
+        }
+
+        // Rotate the ship, only allow rotation if one, and only one key is pressed.
+        if (!(leftArrowPressed && rightArrowPressed)) {
+            if (leftArrowPressed) {
+                asteroidsModel.rotateShip(updateInterval, -rotationAngle);
+            } else if (rightArrowPressed) {
+                asteroidsModel.rotateShip(updateInterval, rotationAngle);
+            }
+        }
+
+        // Update the state of the game, and repaint the graphics.
+        asteroidsModel.update(updateInterval);
         asteroidsView.repaint();
     }
 
@@ -40,31 +66,35 @@ public class AsteroidController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        float rotationAngle = 10f;
-
         if (asteroidsModel.getGameState() == GameState.GAME_OVER) return;
 
+
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            asteroidsModel.accelerateShip(Settings.getUpdateIntervalFloat());
+            this.upArrowPressed = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            // Rotates the ship to the left.
-            asteroidsModel.rotateShip(Settings.getUpdateIntervalFloat(), -rotationAngle);
+            this.leftArrowPressed = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            // Rotates the ship to the right.
-            asteroidsModel.rotateShip(Settings.getUpdateIntervalFloat(), rotationAngle);
+            this.rightArrowPressed = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            // Shoot
+            this.spaceBarPressed = true;
         }
-
-        asteroidsView.repaint();
     }
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            asteroidsModel.accelerateShip(Settings.getUpdateIntervalFloat());
+            this.upArrowPressed = false;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            this.leftArrowPressed = false;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            this.rightArrowPressed = false;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            this.spaceBarPressed = false;
         }
     }
 
