@@ -5,9 +5,9 @@ import no.uib.inf101.sem2.model.Utils.Vector2;
 /*
 Base class for the player and computer controlled character classes.
 
-The reason for using an abstract class, is because these classes share a lot of functionality.
+I decided to use one over an interface, because nearly all of the game objects share a lot of functionality and thus
+the implementation would be identical.
  */
-
 
 public abstract class BaseCharacter {
     private Vector2 position;
@@ -70,7 +70,7 @@ public abstract class BaseCharacter {
     }
 
     /**
-     *  Method responsible for wrapping the character around to the other side of the map if it hits the map border.
+     * Method responsible for wrapping the character around to the other side of the map if it hits the map border.
      * @param mapWidth The map border width
      * @param mapHeight The map border height
      */
@@ -111,7 +111,7 @@ public abstract class BaseCharacter {
      * @param angle The angle that the shape of the character should be rotated by.
      */
     public void rotateShapeBy(float angle) {
-        // Limits to a number between 0-360 degrees.
+        // Limits the angle to a number between 0-360 degrees.
         this.currentAngle = (this.currentAngle + angle) % 360;
         if (this.currentAngle < 0) {
             this.currentAngle += 360;
@@ -145,9 +145,6 @@ public abstract class BaseCharacter {
         }
         return rotatedPoints;
     }
-
-
-
     /** Utility method for calculating the center point of a shape.
      * ChatGPT was partially used for making this one
      *
@@ -166,4 +163,47 @@ public abstract class BaseCharacter {
 
         return new Vector2(center[0], center[1]);
     }
+
+
+    /** Generated fully by ChatGPT. Used to detect if a clossion has occured.
+     * @param otherCharacter
+     * @return
+     */
+    public boolean collisionOccurred(BaseCharacter otherCharacter) {
+        float[][] shapeA = this.getCurrentShape();
+        float[][] shapeB = otherCharacter.getCurrentShape();
+
+        for (int i = 0; i < shapeA.length; i++) {
+            int nextIndex = (i + 1) % shapeA.length;
+            Vector2 edgeA = new Vector2(shapeA[nextIndex][0] - shapeA[i][0], shapeA[nextIndex][1] - shapeA[i][1]);
+            Vector2 normalA = new Vector2(-edgeA.y(), edgeA.x());
+
+            float minA = Float.MAX_VALUE;
+            float maxA = Float.MIN_VALUE;
+            for (float[] point : shapeA) {
+                Vector2 pointVector = new Vector2(point[0] + this.getPosition().x(), point[1] + this.getPosition().y());
+                float dotProduct = pointVector.dotProduct(normalA);
+                minA = Math.min(minA, dotProduct);
+                maxA = Math.max(maxA, dotProduct);
+            }
+
+            float minB = Float.MAX_VALUE;
+            float maxB = Float.MIN_VALUE;
+            for (float[] point : shapeB) {
+                Vector2 pointVector = new Vector2(point[0] + otherCharacter.getPosition().x(), point[1] + otherCharacter.getPosition().y());
+                float dotProduct = pointVector.dotProduct(normalA);
+                minB = Math.min(minB, dotProduct);
+                maxB = Math.max(maxB, dotProduct);
+            }
+
+            if (maxA < minB || maxB < minA) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    
+
+    
 }

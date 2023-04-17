@@ -28,17 +28,18 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     public AsteroidsModel(CharacterFactory characterFactory) {
         this.characterFactory = characterFactory;
-        this.playerScore = 0;
-        this.playerLives = 3;
-        this.player = new PlayerShip(new Vector2(200, 200));
-        this.gameState = GameState.ACTIVE_GAME;
         this.mapWidth = 1000;
         this.mapHeight = 1000;
+        this.playerScore = 0;
+        this.playerLives = 3;
+        this.player = new PlayerShip(new Vector2(this.mapWidth / 2f, this.mapHeight / 2f));
+        this.gameState = GameState.ACTIVE_GAME;
+
 
         // Initialize asteroids.
         int asteroidCount = 10;
         for (int i = 0; i < asteroidCount; i++) {
-            asteroidList.add(characterFactory.getAsteroid());
+            asteroidList.add(this.characterFactory.getAsteroid());
         }
     }
     @Override
@@ -57,7 +58,8 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void accelerateShip(double deltaTime) {
-        this.player.accelerate(100f, deltaTime);
+        float shipAccelerationPerSecond = 100f;
+        this.player.accelerate(shipAccelerationPerSecond, deltaTime);
     }
 
     @Override
@@ -67,7 +69,8 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void fireFromShip(double deltaTime) {
-        bulletList.add(this.player.shootBullet(400f, deltaTime));
+        float bulletVelocityPerSecond = 400f;
+        bulletList.add(this.player.shootBullet(bulletVelocityPerSecond, deltaTime));
     }
 
     @Override
@@ -75,20 +78,37 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         // Since the game happens in space, objects should drift with a constant velocity.
         this.player.move(deltaTime, mapWidth, mapHeight);
 
+        // Move the asteroid and rotate it according to it's set rotation speed.
         for (Asteroid asteroid : asteroidList) {
             asteroid.move(deltaTime, mapWidth, mapHeight);
             asteroid.rotateShapeBy(asteroid.getDegreesOfRotationPerSecond() * Settings.getIntervalMillis() / 1000f);
         }
 
-
-        // Using a traditional for loop so elements can be removed without causing a crash.
-        for (int i = bulletList.size() - 1; i >= 0; i--) {
-            Bullet bullet = bulletList.get(i);
+        List<Bullet> newBulletList = new ArrayList<>();
+        for (Bullet bullet : bulletList) {
             bullet.move(deltaTime, mapWidth, mapHeight);
-            if (bullet.isOutOfBounds(mapWidth, mapHeight)) {
-                bulletList.remove(i);
+            if (!bullet.isOutOfBounds(mapWidth, mapHeight)) {
+                newBulletList.add(bullet);
             }
-}
+        }
+        bulletList = newBulletList;
+
+        List<Bullet> bulletsToRemove = new ArrayList<>();
+        List<Asteroid> asteroidsToRemove = new ArrayList<>();
+
+        for (Bullet bullet : bulletList) {
+            for (Asteroid asteroid : asteroidList) {
+                if (bullet.collisionOccurred(asteroid)) {
+                    bulletsToRemove.add(bullet);
+                    asteroidsToRemove.add(asteroid);
+                    playerScore += 10;
+                }
+            }
+        }
+
+        bulletList.removeAll(bulletsToRemove);
+        asteroidList.removeAll(asteroidsToRemove);
+
     }
 
     @Override
