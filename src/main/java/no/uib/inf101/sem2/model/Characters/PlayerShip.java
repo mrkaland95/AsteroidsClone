@@ -3,8 +3,6 @@ package no.uib.inf101.sem2.model.Characters;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 
 
-
-
 public class PlayerShip extends BaseCharacter {
     private boolean accelerating;
 
@@ -36,6 +34,19 @@ public class PlayerShip extends BaseCharacter {
         };
     }
 
+    public Bullet shootBullet(float bulletSpeed, double deltaTime) {
+        Vector2 bulletPosition = getPosition();
+        float angle = getCurrentAngle() - 90f;
+
+        double radians = Math.toRadians(angle);
+
+        float bulletVelocityX = (float) (bulletSpeed * Math.cos(radians));
+        float bulletVelocityY = (float) (bulletSpeed * Math.sin(radians));
+
+        Vector2 bulletVelocity = new Vector2(bulletVelocityX, bulletVelocityY);
+        return new Bullet(bulletPosition, bulletVelocity, angle);
+    }
+
     @Override
     public void accelerate(float acceleration, double deltaTime) {
         // Beacuse the angle starts paralel to the x axis, we need to subtract by 90 degrees.
@@ -43,8 +54,9 @@ public class PlayerShip extends BaseCharacter {
 
         float thrustX = (float) (acceleration * Math.cos(radians));
         float thrustY = (float) (acceleration * Math.sin(radians));
-        setVelocity(Vector2.translateOverTime(getVelocity(), new Vector2(thrustX, thrustY), deltaTime));
+        this.setVelocity(Vector2.translateOverTime(getVelocity(), new Vector2(thrustX, thrustY), deltaTime));
         // Sets the acceleration to true if the acceleration is greater or lesser than 0.
+        // Variable used for tracking whether the "flame" graphics should be drawn or not.
         this.setAccelerating((acceleration != 0f));
     }
 
