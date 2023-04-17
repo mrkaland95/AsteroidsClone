@@ -10,6 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Class responsible for taking the user's input and change the state of the game.
+ * Meant to loosely follow the same format as Tetris in the first compulsory assignment.
+ */
 public class AsteroidController implements KeyListener {
     private AsteroidsModel asteroidsModel;
     private AsteroidsView asteroidsView;
@@ -23,6 +27,9 @@ public class AsteroidController implements KeyListener {
     boolean upArrowPressed = false;
     boolean spaceBarPressed = false;
 
+    // Variables used to control how fast bullets can be fired.
+    private final long bulletCooldownMillis = 250;
+    private long lastBulletFiredTime = 0;
 
     public AsteroidController(AsteroidsModel asteroidModel, AsteroidsView asteroidsView) {
         this.asteroidsModel = asteroidModel;
@@ -35,34 +42,39 @@ public class AsteroidController implements KeyListener {
         this.lastUpdateTime = System.nanoTime();
     }
 
+    /** Method responsible for updating the state of the game, and performing inputs given by the player.
+     */
     private void performTick(ActionEvent event) {
         if (!asteroidsModel.getGameState().equals(GameState.ACTIVE_GAME)) return;
 
-        float rotationAngle = 5f;
+        float degreesRotated = 4f;
         float updateInterval = Settings.getUpdateIntervalFloat();
 
-
+        // Fire bullets from the ship
+        if (spaceBarPressed) {
+            // Ensures that bullets can't be fired too fast.
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastBulletFiredTime >= bulletCooldownMillis) {
+                asteroidsModel.fireFromShip(updateInterval);
+                lastBulletFiredTime = currentTime;
+            }
+        }
         // Accelerates the player's ship.
         if (upArrowPressed) {
             asteroidsModel.accelerateShip(updateInterval);
         }
-
-        // Rotate the ship, only allow rotation if one, and only one key is pressed.
+        // Rotate the ship, only allow rotation if, and only if, one key is pressed.
         if (!(leftArrowPressed && rightArrowPressed)) {
             if (leftArrowPressed) {
-                asteroidsModel.rotateShip(updateInterval, -rotationAngle);
+                asteroidsModel.rotateShip(updateInterval, -degreesRotated);
             } else if (rightArrowPressed) {
-                asteroidsModel.rotateShip(updateInterval, rotationAngle);
+                asteroidsModel.rotateShip(updateInterval, degreesRotated);
             }
         }
-
         // Update the state of the game, and repaint the graphics.
         asteroidsModel.update(updateInterval);
         asteroidsView.repaint();
     }
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -97,13 +109,6 @@ public class AsteroidController implements KeyListener {
             this.spaceBarPressed = false;
         }
     }
-
-
-    private double calculateDeltaTime() {
-        long currentTime = System.nanoTime();
-        double deltaTime = (currentTime - lastUpdateTime) / 1e9; // Convert nanoseconds to seconds
-        this.lastUpdateTime = currentTime;
-        return deltaTime;
-    }
-
+    @Override
+    public void keyTyped(KeyEvent e) {}
 }

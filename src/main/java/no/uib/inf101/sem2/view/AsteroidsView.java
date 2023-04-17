@@ -42,10 +42,15 @@ public class AsteroidsView extends JPanel {
     }
 
 
+    /**
+     *  Method responsible for drawing all the characters related to the actual game itself.
+     * @param g2d
+     */
     private void drawGame(Graphics2D g2d) {
         g2d.setColor(Color.WHITE);
         // Enables "Anti-Aliasing" for the shapes, making them look less jagged.
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         PlayerShip playerShip = asteroidsModel.getPlayerShip();
 
         drawCharacter(g2d, playerShip);
@@ -53,8 +58,12 @@ public class AsteroidsView extends JPanel {
             drawFlame(g2d, playerShip);
         }
 
-        for (BaseCharacter character : asteroidsModel.getAsteroidList()) {
-            drawCharacter(g2d, character);
+        for (BaseCharacter asteroid : asteroidsModel.getAsteroidList()) {
+            drawCharacter(g2d, asteroid);
+        }
+
+        for (BaseCharacter bullet : asteroidsModel.getBulletList()) {
+            drawCharacter(g2d, bullet);
         }
     }
 

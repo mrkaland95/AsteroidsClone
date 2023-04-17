@@ -21,4 +21,18 @@ public class Bullet extends BaseCharacter {
         };
         return shape;
     }
+
+    @Override
+    public void move(double deltaTime, int mapWidth, int mapHeight) {
+        this.setPosition(Vector2.translateOverTime(this.getPosition(), this.getVelocity(), deltaTime));
+    }
+
+    public boolean isOutOfBounds(int mapWidth, int mapHeight) {
+        if (this.getPosition().x() < 0 || this.getPosition().x() > mapWidth) {
+            return true;
+        } else if (this.getPosition().y() < 0 || this.getPosition().y() > mapHeight) {
+            return true;
+        }
+        return false;
+    }
 }
