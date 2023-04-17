@@ -35,20 +35,12 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         this.mapWidth = 1000;
         this.mapHeight = 1000;
 
-
-
-        // Temp until the character factory is implemented properly.
-//        Asteroid asteroid1 = new Asteroid(new Vector2(300, 100), new Vector2(-15, -20), random.nextFloat(-30, 30));
-//        Asteroid asteroid2 = new Asteroid(new Vector2(600, 150), new Vector2(10, -10), random.nextFloat(-30, 30));
-//        Asteroid asteroid3 = new Asteroid(new Vector2(300, 400), new Vector2(5, 10), random.nextFloat(-30, 30));
-
+        // Initialize asteroids.
         int asteroidCount = 10;
         for (int i = 0; i < asteroidCount; i++) {
             asteroidList.add(characterFactory.getAsteroid());
         }
-
     }
-
     @Override
     public GameState getGameState() {
         return this.gameState;
@@ -75,7 +67,7 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void fireFromShip(double deltaTime) {
-
+        bulletList.add(this.player.shootBullet(400f, deltaTime));
     }
 
     @Override
@@ -88,9 +80,15 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
             asteroid.rotateShapeBy(asteroid.getDegreesOfRotationPerSecond() * Settings.getIntervalMillis() / 1000f);
         }
 
-        for (Bullet bullet : bulletList) {
+
+        // Using a traditional for loop so elements can be removed without causing a crash.
+        for (int i = bulletList.size() - 1; i >= 0; i--) {
+            Bullet bullet = bulletList.get(i);
             bullet.move(deltaTime, mapWidth, mapHeight);
-        }
+            if (bullet.isOutOfBounds(mapWidth, mapHeight)) {
+                bulletList.remove(i);
+            }
+}
     }
 
     @Override

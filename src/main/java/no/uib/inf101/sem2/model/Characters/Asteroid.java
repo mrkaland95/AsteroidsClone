@@ -11,20 +11,6 @@ public class Asteroid extends BaseCharacter {
         this.degreesOfRotationPerSecond = rotationPerSecond;
     }
 
-    public Asteroid(Vector2 startPosition) {
-        this.setCurrentShape(getBaseShape());
-        this.setPosition(startPosition);
-        this.setVelocity(new Vector2(0, 0));
-    }
-
-    public float getDegreesOfRotationPerSecond() {
-        return degreesOfRotationPerSecond;
-    }
-
-    public void setDegreesOfRotationPerSecond(float degreesOfRotationPerSecond) {
-        this.degreesOfRotationPerSecond = degreesOfRotationPerSecond;
-    }
-
     @Override
     protected float[][] getBaseShape() {
         float[][] points = {
@@ -37,4 +23,13 @@ public class Asteroid extends BaseCharacter {
         };
         return points;
     }
+    public float getDegreesOfRotationPerSecond() {
+        return degreesOfRotationPerSecond;
+    }
+
+    public void setDegreesOfRotationPerSecond(float degreesOfRotationPerSecond) {
+        this.degreesOfRotationPerSecond = degreesOfRotationPerSecond;
+    }
+
+
 }
