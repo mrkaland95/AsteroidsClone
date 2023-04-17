@@ -19,12 +19,13 @@ public class RandomAdversaryFactory implements CharacterFactory {
     }
 
     /**
-     * Returns a random asteroid.
+     * Returns an asteroid with random parameters, i.e a random start position, random velocity, random rotation speed.
      * @return
      */
     private Asteroid getRandomAsteroid() {
-        Vector2 startPosition = new Vector2(random.nextFloat(300, 600), random.nextFloat(200, 650));
-        Vector2 startVelocity = new Vector2(random.nextFloat(-20, 20), random.nextFloat(-20, 20));
+        float velocityUpperLimit = 30f;
+        Vector2 startPosition = new Vector2(random.nextFloat(0, 600), random.nextFloat(0, 800));
+        Vector2 startVelocity = new Vector2(random.nextFloat(-velocityUpperLimit, velocityUpperLimit), random.nextFloat(-velocityUpperLimit, velocityUpperLimit));
         float startRotation = random.nextFloat(-30, 30);
         return new Asteroid(startPosition, startVelocity, startRotation);
     }
