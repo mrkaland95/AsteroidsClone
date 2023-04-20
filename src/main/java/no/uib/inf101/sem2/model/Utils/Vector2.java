@@ -15,8 +15,9 @@ public record Vector2(float x, float y) {
     public static double distance(Vector2 vectorA, Vector2 vectorB) {
         float x = vectorB.x() - vectorA.x();
         float y = vectorB.y() - vectorA.y();
-        return Math.sqrt(x*x + y*y);
+        return Math.sqrt(x * x + y * y);
     }
+
     public Vector2 translate(float dx, float dy) {
         float x = this.x();
         float y = this.y();
@@ -32,4 +33,14 @@ public record Vector2(float x, float y) {
         double newY = start.y() + shift.y() * deltaTime;
         return new Vector2((float) newX,(float) newY);
     }
+
+    /**
+     * Calculates the dot product of this matrix and another matrix.
+     * @param other
+     * @return
+     */
+    public float dotProduct(Vector2 other) {
+        return this.x() * other.x() + this.y() * other.y();
+    }
+
 }

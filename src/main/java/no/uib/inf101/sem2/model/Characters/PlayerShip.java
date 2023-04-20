@@ -34,7 +34,12 @@ public class PlayerShip extends BaseCharacter {
         };
     }
 
-    public Bullet shootBullet(float bulletSpeed, double deltaTime) {
+    /**
+     * Shoots a bullet, firing in the same direction as the ship is pointing.
+     * @param bulletSpeed
+     * @return
+     */
+    public Bullet shootBullet(float bulletSpeed) {
         Vector2 bulletPosition = getPosition();
         float angle = getCurrentAngle() - 90f;
 

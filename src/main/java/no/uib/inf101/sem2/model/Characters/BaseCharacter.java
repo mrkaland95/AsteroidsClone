@@ -5,7 +5,7 @@ import no.uib.inf101.sem2.model.Utils.Vector2;
 /*
 Base class for the player and computer controlled character classes.
 
-I decided to use one over an interface, because nearly all of the game objects share a lot of functionality and thus
+I decided to use one over an interface, because nearly all the game objects share a lot of functionality and thus
 the implementation would be identical.
  */
 
@@ -14,7 +14,7 @@ public abstract class BaseCharacter {
     private Vector2 velocity;
     private float[][] currentShape;
     private float currentAngle;
-    private int sizeScalar;
+    private float sizeScalar;
 
     /** Defines the base shape of the character, defined as points,
      *  where lines will be drawn between these points to render a shape.
@@ -24,24 +24,44 @@ public abstract class BaseCharacter {
     protected abstract float[][] getBaseShape();
 
     /**
-     * Gets the state of the current shape of the object, including it's rotated state.
+     * Gets the state of the current shape of the object, including it's rotated, and scaled state.
      * @return
      */
     public float[][] getCurrentShape() {
         return currentShape;
     }
+
+    /** Sets the state of the current shape.
+     * @param currentShape
+     */
     public void setCurrentShape(float[][] currentShape) {
         this.currentShape = currentShape;
     }
+
+    /** Gets the 2d position of the object.
+     * @return
+     */
     public Vector2 getPosition() {
         return this.position;
     }
+
+    /** Sets the 2d position of the object.
+     * @param position
+     */
     public void setPosition(Vector2 position) {
         this.position = position;
     }
+
+    /** Gets the 2d velocity of the object.
+     * @return Vector2 of the velocity.
+     */
     public Vector2 getVelocity() {
         return velocity;
     }
+
+    /** Sets the velocity of the object.
+     * @param velocity The velocity of the object defined by a Vector2.
+     */
     public void setVelocity(Vector2 velocity) {
         this.velocity = velocity;
     }
@@ -51,18 +71,18 @@ public abstract class BaseCharacter {
     public float getCurrentAngle() {
         return currentAngle;
     }
+
+    /** Sets the angle the object should point towards.
+     * @param currentAngle
+     */
     public void setCurrentAngle(float currentAngle) {
         this.currentAngle = currentAngle;
     }
-    public int getSizeScalar() {
+    public float getSizeScalar() {
         return sizeScalar;
     }
-    public void setSizeScalar(int sizeScalar) {
+    public void setSizeScalar(float sizeScalar) {
         this.sizeScalar = sizeScalar;
-    }
-    public boolean collidedWith(BaseCharacter character) {
-        // TODO implement this
-        return false;
     }
     public void move(double deltaTime, int mapWidth, int mapHeight) {
         this.position = Vector2.translateOverTime(this.position, this.velocity, deltaTime);
@@ -92,10 +112,20 @@ public abstract class BaseCharacter {
         this.setPosition(new Vector2(posX, posY));
     }
 
+
+    /** Scales the shape stored in the character by a scalefactor.
+     * @param scaleFactor
+     */
+    public void scaleCurrentShape(float scaleFactor) {
+        this.sizeScalar = scaleFactor;
+        this.currentShape = this.scaleShape(this.currentShape, scaleFactor);
+    }
+
+
     /**
      * Accelerates the character by the given amount per second.
      * @param acceleration The acceleration amount.
-     * @param deltaTime The time since the last gametick.
+     * @param deltaTime The time since the last game tick.
      */
     public void accelerate(float acceleration, double deltaTime) {
         double radians = Math.toRadians(currentAngle - 90f);
@@ -110,7 +140,7 @@ public abstract class BaseCharacter {
      *
      * @param angle The angle that the shape of the character should be rotated by.
      */
-    public void rotateShapeBy(float angle) {
+    public void rotateCurrentShape(float angle) {
         // Limits the angle to a number between 0-360 degrees.
         this.currentAngle = (this.currentAngle + angle) % 360;
         if (this.currentAngle < 0) {
@@ -126,6 +156,59 @@ public abstract class BaseCharacter {
         return calculateCenter(points);
     }
 
+    /** Scales the size of an object's shape by a factor.
+     * @param shape The shape of the object to be scaled.
+     * @param scaleFactor The amount to scale the shape by.
+     * @return Scaled shape.
+     */
+    protected float[][] scaleShape(float[][] shape, float scaleFactor) {
+        float[][] scaledShape = new float[shape.length][2];
+
+        for (int i = 0; i < shape.length; i++) {
+            scaledShape[i][0] = shape[i][0] * scaleFactor;
+            scaledShape[i][1] = shape[i][1] * scaleFactor;
+        }
+
+        return scaledShape;
+    }
+
+    /** Generated fully by ChatGPT. Used to detect if a collision has occurred.
+     * @param otherCharacter
+     * @return
+     */
+    public boolean collisionOccurred(BaseCharacter otherCharacter) {
+        float[][] shapeA = this.getCurrentShape();
+        float[][] shapeB = otherCharacter.getCurrentShape();
+
+        for (int i = 0; i < shapeA.length; i++) {
+            int nextIndex = (i + 1) % shapeA.length;
+            Vector2 edgeA = new Vector2(shapeA[nextIndex][0] - shapeA[i][0], shapeA[nextIndex][1] - shapeA[i][1]);
+            Vector2 normalA = new Vector2(-edgeA.y(), edgeA.x());
+
+            float minA = Float.MAX_VALUE;
+            float maxA = Float.MIN_VALUE;
+            for (float[] point : shapeA) {
+                Vector2 pointVector = new Vector2(point[0] + this.getPosition().x(), point[1] + this.getPosition().y());
+                float dotProduct = pointVector.dotProduct(normalA);
+                minA = Math.min(minA, dotProduct);
+                maxA = Math.max(maxA, dotProduct);
+            }
+
+            float minB = Float.MAX_VALUE;
+            float maxB = Float.MIN_VALUE;
+            for (float[] point : shapeB) {
+                Vector2 pointVector = new Vector2(point[0] + otherCharacter.getPosition().x(), point[1] + otherCharacter.getPosition().y());
+                float dotProduct = pointVector.dotProduct(normalA);
+                minB = Math.min(minB, dotProduct);
+                maxB = Math.max(maxB, dotProduct);
+            }
+
+            if (maxA < minB || maxB < minA) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /** Utility method used to rotate the points in a shape by a given angle.
      * ChatGPT was used for figuring this one out
@@ -164,46 +247,4 @@ public abstract class BaseCharacter {
         return new Vector2(center[0], center[1]);
     }
 
-
-    /** Generated fully by ChatGPT. Used to detect if a clossion has occured.
-     * @param otherCharacter
-     * @return
-     */
-    public boolean collisionOccurred(BaseCharacter otherCharacter) {
-        float[][] shapeA = this.getCurrentShape();
-        float[][] shapeB = otherCharacter.getCurrentShape();
-
-        for (int i = 0; i < shapeA.length; i++) {
-            int nextIndex = (i + 1) % shapeA.length;
-            Vector2 edgeA = new Vector2(shapeA[nextIndex][0] - shapeA[i][0], shapeA[nextIndex][1] - shapeA[i][1]);
-            Vector2 normalA = new Vector2(-edgeA.y(), edgeA.x());
-
-            float minA = Float.MAX_VALUE;
-            float maxA = Float.MIN_VALUE;
-            for (float[] point : shapeA) {
-                Vector2 pointVector = new Vector2(point[0] + this.getPosition().x(), point[1] + this.getPosition().y());
-                float dotProduct = pointVector.dotProduct(normalA);
-                minA = Math.min(minA, dotProduct);
-                maxA = Math.max(maxA, dotProduct);
-            }
-
-            float minB = Float.MAX_VALUE;
-            float maxB = Float.MIN_VALUE;
-            for (float[] point : shapeB) {
-                Vector2 pointVector = new Vector2(point[0] + otherCharacter.getPosition().x(), point[1] + otherCharacter.getPosition().y());
-                float dotProduct = pointVector.dotProduct(normalA);
-                minB = Math.min(minB, dotProduct);
-                maxB = Math.max(maxB, dotProduct);
-            }
-
-            if (maxA < minB || maxB < minA) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    
-
-    
 }

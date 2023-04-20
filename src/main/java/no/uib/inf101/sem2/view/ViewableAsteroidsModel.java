@@ -9,6 +9,7 @@ import no.uib.inf101.sem2.model.Utils.DimensionCustom;
 import java.util.List;
 
 public interface ViewableAsteroidsModel {
+    int getPlayerLives();
     /**
      * Gets the score the player has accumulated so far.
      * @return

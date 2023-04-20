@@ -38,16 +38,12 @@ public class AsteroidController implements KeyListener {
 
         this.timer = new Timer(Settings.getIntervalMillis(), this::performTick);
         this.timer.start();
-
-        this.lastUpdateTime = System.nanoTime();
     }
 
     /** Method responsible for updating the state of the game, and performing inputs given by the player.
      */
     private void performTick(ActionEvent event) {
-        if (!asteroidsModel.getGameState().equals(GameState.ACTIVE_GAME)) return;
-
-        float degreesRotated = 4f;
+        float shipDegreesRotated = Settings.DEGREES_ROTATED_PER_TICK;
         float updateInterval = Settings.getUpdateIntervalFloat();
 
         // Fire bullets from the ship
@@ -66,9 +62,9 @@ public class AsteroidController implements KeyListener {
         // Rotate the ship, only allow rotation if, and only if, one key is pressed.
         if (!(leftArrowPressed && rightArrowPressed)) {
             if (leftArrowPressed) {
-                asteroidsModel.rotateShip(updateInterval, -degreesRotated);
+                asteroidsModel.rotateShip(updateInterval, -shipDegreesRotated);
             } else if (rightArrowPressed) {
-                asteroidsModel.rotateShip(updateInterval, degreesRotated);
+                asteroidsModel.rotateShip(updateInterval, shipDegreesRotated);
             }
         }
         // Update the state of the game, and repaint the graphics.
@@ -96,6 +92,8 @@ public class AsteroidController implements KeyListener {
     }
     @Override
     public void keyReleased(KeyEvent e) {
+        if (asteroidsModel.getGameState() == GameState.GAME_OVER) return;
+
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             this.upArrowPressed = false;
         }

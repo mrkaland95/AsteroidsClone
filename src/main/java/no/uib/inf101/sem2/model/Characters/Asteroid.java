@@ -4,12 +4,29 @@ import no.uib.inf101.sem2.model.Utils.Vector2;
 
 public class Asteroid extends BaseCharacter {
     private float degreesOfRotationPerSecond = 20f;
-    public Asteroid(Vector2 startPosition, Vector2 startVelocity, float rotationPerSecond) {
+    private float baseSize;
+    public Asteroid(Vector2 startPosition, Vector2 startVelocity, float rotationPerSecond, float baseSize) {
         this.setCurrentShape(getBaseShape());
         this.setPosition(startPosition);
         this.setVelocity(startVelocity);
         this.degreesOfRotationPerSecond = rotationPerSecond;
+        this.baseSize = baseSize;
+        this.setSizeScalar(1f);
+        this.scaleCurrentShape(getSizeScalar());
     }
+
+    public Asteroid(Vector2 startPosition, Vector2 startVelocity, float rotationPerSecond, float startingAngle, float baseSize) {
+        this.setCurrentShape(getBaseShape());
+        this.setPosition(startPosition);
+        this.setVelocity(startVelocity);
+        this.degreesOfRotationPerSecond = rotationPerSecond;
+        this.baseSize = baseSize;
+        this.setSizeScalar(1f);
+        this.scaleCurrentShape(getSizeScalar());
+        this.rotateCurrentShape(startingAngle);
+    }
+
+
 
     @Override
     protected float[][] getBaseShape() {
@@ -27,9 +44,12 @@ public class Asteroid extends BaseCharacter {
         return degreesOfRotationPerSecond;
     }
 
-    public void setDegreesOfRotationPerSecond(float degreesOfRotationPerSecond) {
-        this.degreesOfRotationPerSecond = degreesOfRotationPerSecond;
+    public float getBaseSize() {
+        return baseSize;
     }
-
-
+    @Override
+    public void scaleCurrentShape(float scaleFactor) {
+        setSizeScalar(scaleFactor);
+        setCurrentShape(this.scaleShape(getCurrentShape(), scaleFactor * this.baseSize));
+    }
 }

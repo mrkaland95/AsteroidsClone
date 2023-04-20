@@ -1,10 +1,8 @@
 package no.uib.inf101.sem2.model.Characters;
 
 import no.uib.inf101.sem2.model.AsteroidsModel;
-import no.uib.inf101.sem2.model.Characters.Bullet;
-import no.uib.inf101.sem2.model.Characters.PlayerShip;
 import no.uib.inf101.sem2.model.Factories.CharacterFactory;
-import no.uib.inf101.sem2.model.Factories.RandomAdversaryFactory;
+import no.uib.inf101.sem2.model.Factories.RandomCharacterFactory;
 import no.uib.inf101.sem2.model.Settings;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +18,7 @@ public class TestAsteroidsModel {
 
     @BeforeEach
     public void setUp() {
-        CharacterFactory characterFactory = new RandomAdversaryFactory();
+        CharacterFactory characterFactory = new RandomCharacterFactory();
         asteroidsModel = new AsteroidsModel(characterFactory);
     }
 

@@ -3,10 +3,12 @@ package no.uib.inf101.sem2.view;
 
 import no.uib.inf101.sem2.model.Characters.BaseCharacter;
 import no.uib.inf101.sem2.model.Characters.PlayerShip;
+import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
@@ -39,6 +41,7 @@ public class AsteroidsView extends JPanel {
         drawGameBorder(g2);
         drawGame(g2);
         drawScore(g2);
+//        drawPlayerLives(g2);
     }
 
 
@@ -53,10 +56,14 @@ public class AsteroidsView extends JPanel {
 
         PlayerShip playerShip = asteroidsModel.getPlayerShip();
 
-        drawCharacter(g2d, playerShip);
-        if (playerShip.isAccelerating()) {
-            drawFlame(g2d, playerShip);
+        // Only draw the ship if the game is not over.
+        if (!(asteroidsModel.getGameState() == GameState.GAME_OVER)) {
+            drawCharacter(g2d, playerShip);
+            if (playerShip.isAccelerating()) {
+                drawFlame(g2d, playerShip);
+            }
         }
+
 
         for (BaseCharacter asteroid : asteroidsModel.getAsteroidList()) {
             drawCharacter(g2d, asteroid);
@@ -67,13 +74,41 @@ public class AsteroidsView extends JPanel {
         }
     }
 
+    /** Draws the score of the game to the top of the screen, centered in the x direction.
+     * @param g2d
+     */
     private void drawScore(Graphics2D g2d) {
         String score = "Score: " + asteroidsModel.getScore();
         Point2D point = new Point(this.getWidth() / 2, 40);
         Inf101Graphics.drawCenteredString(g2d, score, point);
     }
 
+    private void drawPlayerLives(Graphics2D g2d) {
+        PlayerShip player = asteroidsModel.getPlayerShip();
+        float[][] baseShape = player.getCurrentShape();
+        int spacing = 20;
+        int iconSize = 15;
+        float scale = (float) iconSize / 10f; // Since the original ship shape has a height of 10
 
+        for (int i = 0; i < asteroidsModel.getPlayerLives(); i++) {
+//            g2d.save();
+            g2d.translate(i * (iconSize + spacing), spacing);
+            g2d.scale(scale, scale);
+
+            Path2D lifeShape = new Path2D.Float();
+            lifeShape.moveTo(baseShape[0][0], baseShape[0][1]);
+
+            for (int j = 1; j < baseShape.length; j++) {
+                lifeShape.lineTo(baseShape[j][0], baseShape[j][1]);
+            }
+
+            lifeShape.closePath();
+            g2d.setColor(Color.WHITE);
+            g2d.fill(lifeShape);
+//            g2d.restore();
+    }
+
+    }
 
     private void drawGameBorder(Graphics2D g2d) {
         this.getHeight();
