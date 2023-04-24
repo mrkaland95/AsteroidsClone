@@ -175,7 +175,7 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
         double distance = Vector2.distance(playerPosition, asteroidPosition);
         // Check if the distance is greater than the minimum spawn distance
-        return distance > MIN_SPAWN_DISTANCE;
+        return distance > MIN_SPAWN_DISTANCE_FROM_SHIP;
     }
 
     void generateNewAsteroids() {

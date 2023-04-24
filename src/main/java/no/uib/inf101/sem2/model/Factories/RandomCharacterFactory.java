@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class RandomCharacterFactory implements CharacterFactory {
     Random random = new Random();
-    float velocityUpperLimit = Settings.ASTEROID_VELOCITY_LIMIT;
+    float velocityUpperLimit = Settings.ASTEROID_MAX_VELOCITY;
 
 
     @Override

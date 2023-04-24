@@ -70,7 +70,7 @@ public class PlayerShip extends BaseCharacter {
         Vector2 newVelocity = Vector2.translateOverTime(getVelocity(), new Vector2(thrustX, thrustY), deltaTime);
 
         // Velocity limit
-        float maxVelocity = Settings.SHIP_VELOCITY_LIMIT;
+        float maxVelocity = Settings.SHIP_MAX_VELOCITY;
         float velocityMagnitude = (float) Math.sqrt(newVelocity.x() * newVelocity.x() + newVelocity.y() * newVelocity.y());
 
         if (velocityMagnitude > maxVelocity) {

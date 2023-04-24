@@ -17,7 +17,6 @@ import java.awt.event.KeyListener;
 public class AsteroidController implements KeyListener {
     private AsteroidsModel asteroidsModel;
     private AsteroidsView asteroidsView;
-    private long lastUpdateTime;
     Timer timer;
 
     // These are used to allow multiple keys to be pressed at the same time.
