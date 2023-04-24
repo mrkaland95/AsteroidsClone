@@ -3,6 +3,7 @@ package no.uib.inf101.sem2.controller;
 import no.uib.inf101.sem2.model.AsteroidsModel;
 import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.Settings;
+import no.uib.inf101.sem2.sound.SoundManager;
 import no.uib.inf101.sem2.view.AsteroidsView;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ public class AsteroidController implements KeyListener {
     private final ControllableAsteroidModel asteroidsModel;
     private final AsteroidsView asteroidsView;
     private final Timer timer;
+    private final SoundManager soundManager;
 
     // These are used to allow multiple keys to be pressed at the same time.
     // So for example the player is able to shoot and rotate at the same time.
@@ -37,6 +39,7 @@ public class AsteroidController implements KeyListener {
 
         this.timer = new Timer(Settings.getIntervalMillis(), this::performTick);
         this.timer.start();
+        this.soundManager = new SoundManager();
     }
 
     /** Method responsible for updating the state of the game, and performing inputs given by the player.
@@ -51,13 +54,15 @@ public class AsteroidController implements KeyListener {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastBulletFiredTime >= bulletCooldownMillis) {
                 asteroidsModel.fireFromShip(updateInterval);
+                soundManager.playFireSound();
                 lastBulletFiredTime = currentTime;
             }
         }
-        // Accelerates the player's ship.
+        // Accelerates the player's ship and sets the acceleration state.
         if (upArrowPressed) {
             asteroidsModel.accelerateShip(updateInterval);
             asteroidsModel.setShipAccelerationState(true);
+            soundManager.playAccelerateSound();
         } else {
             asteroidsModel.setShipAccelerationState(false);
         }
