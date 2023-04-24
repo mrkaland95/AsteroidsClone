@@ -12,8 +12,9 @@ public class Settings {
     static public final int MAXIMUM_ASTEROID_COUNT = 33;
     static public final int MINIMUM_ASTEROID_COUNT = 8;
 
-    static public final int ASTEROID_KILLED_SCORE = 50;
-    static public final int UFO_KILLED_SCORE = 100;
+    static public final int ASTEROID_KILLED_SCORE = 75;
+    static public final int UFO_KILLED_SCORE = 150;
+    static public final int INITIAL_PLAYER_LIVES = 3;
 
     static public final float BULLET_VELOCITY_PER_SECOND = 400f;
     static public final float SHIP_MAX_VELOCITY = 100f;

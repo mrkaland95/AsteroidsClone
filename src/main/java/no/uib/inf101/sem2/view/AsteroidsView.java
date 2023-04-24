@@ -64,11 +64,12 @@ public class AsteroidsView extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         drawGameBorder(g2);
         drawGame(g2);
-        drawPlayerLives(g2);
         if (asteroidsModel.getGameState() == GameState.ACTIVE_GAME) {
+            drawPlayerLives(g2);
             drawScore(g2);
+        } else {
+            drawGameOverScreen(g2);
         }
-        // TODO draw gameover score.
     }
 
 
@@ -109,7 +110,6 @@ public class AsteroidsView extends JPanel {
     private void drawScore(Graphics2D g2d) {
         String score = "Score: " + asteroidsModel.getScore();
         Point2D point = new Point(this.getWidth() / 2, 40);
-        System.out.println(this.getHeight());
         Inf101Graphics.drawCenteredString(g2d, score, point);
     }
 
@@ -149,6 +149,9 @@ public class AsteroidsView extends JPanel {
         }
     }
 
+    /** Draws a thin white border around the map.
+     * @param g2d
+     */
     private void drawGameBorder(Graphics2D g2d) {
         // Draw the map border
         g2d.setColor(Color.WHITE);
@@ -181,6 +184,27 @@ public class AsteroidsView extends JPanel {
         g2d.drawPolygon(fireXPoints, fireYPoints, fireShape.length);
     }
 
+    /** Draws a game over screen.
+     * @param g2d
+     */
+    private void drawGameOverScreen(Graphics2D g2d) {
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 36));
+        String gameOverText = "Game Over";
+        float gameOverTextWidth = (float) g2d.getFontMetrics().getStringBounds(gameOverText, g2d).getWidth();
+        g2d.drawString(gameOverText, getWidth() / 2f - gameOverTextWidth / 2f, getHeight() / 2f - 50);
+
+        g2d.setFont(new Font("Arial", Font.PLAIN, 24));
+        String scoreText = "Your score was: " + asteroidsModel.getScore();
+        float scoreTextWidth = (float) g2d.getFontMetrics().getStringBounds(scoreText, g2d).getWidth();
+        g2d.drawString(scoreText, getWidth() / 2f - scoreTextWidth / 2, getHeight() / 2f);
+
+        String newGameText = "Press Enter to start a new game";
+        float newGameTextWidth = (float) g2d.getFontMetrics().getStringBounds(newGameText, g2d).getWidth();
+        g2d.drawString(newGameText, getWidth() / 2f - newGameTextWidth / 2, getHeight() / 2f + 50);
+    }
+
     private float[][] translateShape(float[][] shape, Vector2 translation) {
         float[][] translatedShape = new float[shape.length][2];
 
@@ -191,8 +215,6 @@ public class AsteroidsView extends JPanel {
 
         return translatedShape;
     }
-
-
 
     /**
      * I know there is a method that already does this in "Inf101graphics", but you can't change the font or size

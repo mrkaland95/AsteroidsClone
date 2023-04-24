@@ -30,4 +30,6 @@ public interface ControllableAsteroidModel {
      * @param deltaTime The time since the last frame was rendered.
      */
     void update(double deltaTime);
+
+    void resetGame();
 }

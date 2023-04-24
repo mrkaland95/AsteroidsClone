@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestAsteroidsModel {
     private AsteroidsModel asteroidsModel;
 
-
     @BeforeEach
     public void setUp() {
         CharacterFactory characterFactory = new RandomCharacterFactory();
@@ -47,20 +46,20 @@ public class TestAsteroidsModel {
     @Test
     public void testRotateShip() {
         PlayerShip playerShip = asteroidsModel.getPlayerShip();
-        float updateInterval = Settings.getUpdateIntervalFloat();
+        float deltaTime = 1f;
 
         // Initial rotation angle
         float initialRotation = playerShip.getCurrentAngle();
 
         // Rotate the ship 10 degrees clockwise
-        float rotationAngle = 10;
-        asteroidsModel.rotateShip(updateInterval, rotationAngle);
+        float rotationAngle = 10f;
+        asteroidsModel.rotateShip(deltaTime, rotationAngle);
 
         // Check the updated rotation angle
-        assertEquals(initialRotation + rotationAngle, playerShip.getCurrentAngle(), 0.001);
+        assertEquals(initialRotation + rotationAngle * deltaTime, playerShip.getCurrentAngle(), 0.001);
 
         // Rotate the ship 10 degrees counterclockwise
-        asteroidsModel.rotateShip(updateInterval, -rotationAngle);
+        asteroidsModel.rotateShip(deltaTime, -rotationAngle);
 
         // Check the rotation angle is back to the initial value
         assertEquals(initialRotation, playerShip.getCurrentAngle(), 0.001);

@@ -15,9 +15,9 @@ import java.awt.event.KeyListener;
  * Meant to loosely follow the same format as Tetris in the first compulsory assignment.
  */
 public class AsteroidController implements KeyListener {
-    private AsteroidsModel asteroidsModel;
-    private AsteroidsView asteroidsView;
-    Timer timer;
+    private final ControllableAsteroidModel asteroidsModel;
+    private final AsteroidsView asteroidsView;
+    private final Timer timer;
 
     // These are used to allow multiple keys to be pressed at the same time.
     // So for example the player is able to shoot and rotate at the same time.
@@ -58,7 +58,7 @@ public class AsteroidController implements KeyListener {
         if (upArrowPressed) {
             asteroidsModel.accelerateShip(updateInterval);
         }
-        // Rotate the ship, only allow rotation if, and only if, one key is pressed.
+        // Rotate the ship, if and only if, one of the keys is pressed at a time.
         if (!(leftArrowPressed && rightArrowPressed)) {
             if (leftArrowPressed) {
                 asteroidsModel.rotateShip(updateInterval, -shipDegreesRotated);
@@ -73,8 +73,11 @@ public class AsteroidController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (asteroidsModel.getGameState() == GameState.GAME_OVER) return;
-
+        if (asteroidsModel.getGameState() == GameState.GAME_OVER && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            asteroidsModel.resetGame();
+        } else if (asteroidsModel.getGameState() == GameState.GAME_OVER) {
+            return;
+        }
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             this.upArrowPressed = true;
@@ -88,10 +91,11 @@ public class AsteroidController implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             this.spaceBarPressed = true;
         }
+
+
     }
     @Override
     public void keyReleased(KeyEvent e) {
-        if (asteroidsModel.getGameState() == GameState.GAME_OVER) return;
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             this.upArrowPressed = false;

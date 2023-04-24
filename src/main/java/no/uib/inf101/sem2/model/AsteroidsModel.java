@@ -32,11 +32,12 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
      */
     public AsteroidsModel(CharacterFactory characterFactory) {
         this.characterFactory = characterFactory;
-        this.mapWidth = Settings.MAP_WIDTH;
-        this.mapHeight = Settings.MAP_HEIGHT;
+        this.mapWidth = MAP_WIDTH;
+        this.mapHeight = MAP_HEIGHT;
         this.playerScore = 0;
-        this.playerLives = 3;
+        this.playerLives = INITIAL_PLAYER_LIVES;
         this.invulnerableTime = 0f;
+        // Spawn the player in the middle of the map.
         this.player = new PlayerShip(new Vector2(this.mapWidth / 2f, this.mapHeight / 2f));
         this.gameState = GameState.ACTIVE_GAME;
     }
@@ -174,6 +175,11 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         return mapWidth;
     }
 
+    public void resetGame() {
+        this.gameState = GameState.ACTIVE_GAME;
+        this.playerLives = Settings.INITIAL_PLAYER_LIVES;
+        this.playerScore = 0;
+    }
 
     public void setMapDimensions(int newWidth, int newHeight) {
         this.mapWidth = newWidth;

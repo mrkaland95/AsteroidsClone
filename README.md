@@ -25,10 +25,6 @@ For å skyte på asteroider, trykker man mellomrom knappen.
 * Karakterer som "glir" jevnt(siden de er i rommet), skip som kan akselerere, rotere og skyte.
 * Karakterer dukker opp på andre siden av kartet når de når kanten av kartet.
 * Tilfeldig "spawning" av asteroider, som ikke kan spawne for nærmt spillerens skip.
-* 
-
-
-
 
 
 
@@ -38,6 +34,7 @@ Og at spillkarter "passer" til rammen til vinduet. Dette fungerer noenlunde, men
 Derfor burde vinduet helst ikke "resizes" når man spiller.
 
 
-
+# Kilder
+* Lyd hentet fra: http://www.classicgaming.cc/classics/asteroids/sounds
 
 Se [oppgaveteksten](./OPPGAVETEKST.md) til semesteroppgave 2. Denne README -filen kan du endre som en del av dokumentasjonen til programmet, hvor du beskriver for en bruker hvordan programmet skal benyttes.
