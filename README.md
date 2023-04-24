@@ -7,6 +7,8 @@ Eksempel på en som min versjon er løst basert på: https://freeasteroids.org/
 
 Spillet går ut på at man flyr et romskip, som flyter rundt i rommet. Spilleren kan akselerere framover,
 rotere skiper, og skyte med "mellomrom".
+Som spiller må du derimot være forsiktig, for den eneste måten å "bremse" skipet, er å snu det rundt 180 grader,
+og deretter akselerere andre veien.
 
 Når man ødelegger asteroider, får man poeng. Når man ødelegger store asteroider, dukker to nye asteroider opp.
 
@@ -40,4 +42,3 @@ Derfor burde vinduet helst ikke "resizes" når man spiller.
 # Kilder
 * Lyd hentet fra: http://www.classicgaming.cc/classics/asteroids/sounds
 
-Se [oppgaveteksten](./OPPGAVETEKST.md) til semesteroppgave 2. Denne README -filen kan du endre som en del av dokumentasjonen til programmet, hvor du beskriver for en bruker hvordan programmet skal benyttes.
