@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import static no.uib.inf101.sem2.model.Settings.BULLET_COOLDOWN_MILLIS;
+
 /**
  * Class responsible for taking the user's input and change the state of the game.
  * Meant to loosely follow the same format as Tetris in the first compulsory assignment.
@@ -29,7 +31,6 @@ public class AsteroidController implements KeyListener {
     boolean spaceBarPressed = false;
 
     // Variables used to control how fast bullets can be fired.
-    private final long bulletCooldownMillis = 250;
     private long lastBulletFiredTime = 0;
 
     public AsteroidController(AsteroidsModel asteroidModel, AsteroidsView asteroidsView) {
@@ -52,7 +53,7 @@ public class AsteroidController implements KeyListener {
         if (spaceBarPressed) {
             // Ensures that bullets can't be fired too fast.
             long currentTime = System.currentTimeMillis();
-            if (currentTime - lastBulletFiredTime >= bulletCooldownMillis) {
+            if (currentTime - lastBulletFiredTime >= BULLET_COOLDOWN_MILLIS) {
                 asteroidsModel.fireFromShip(updateInterval);
                 soundManager.playFireSound();
                 lastBulletFiredTime = currentTime;
