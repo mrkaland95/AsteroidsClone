@@ -15,12 +15,14 @@ public class Settings {
     static public final int ASTEROID_KILLED_SCORE = 75;
     static public final int UFO_KILLED_SCORE = 150;
     static public final int INITIAL_PLAYER_LIVES = 3;
+    static public final long BULLET_COOLDOWN_MILLIS = 350;
 
     static public final float BULLET_VELOCITY_PER_SECOND = 400f;
     static public final float SHIP_MAX_VELOCITY = 100f;
-    static public final float ASTEROID_MAX_VELOCITY = 75f;
+    static public final float ASTEROID_MAX_VELOCITY = 85f;
     static public final float DEGREES_ROTATED_PER_SECOND = 240f;
     static public final float SHIP_ACCELERATION_PER_SECOND = 100f;
+
 
     static public final float MIN_SPAWN_DISTANCE_FROM_SHIP = 100f;
 
