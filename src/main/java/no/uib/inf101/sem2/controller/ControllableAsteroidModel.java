@@ -32,4 +32,5 @@ public interface ControllableAsteroidModel {
     void update(double deltaTime);
 
     void resetGame();
+    void setShipAccelerationState(boolean accelerationState);
 }

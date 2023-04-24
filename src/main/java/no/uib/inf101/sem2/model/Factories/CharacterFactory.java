@@ -20,5 +20,8 @@ public interface CharacterFactory {
      */
     List<Asteroid> getSmallAsteroidPair(Vector2 startPosition);
 
+    /** Gets a UFO object.
+     * @return
+     */
     UFO getUFO();
 }

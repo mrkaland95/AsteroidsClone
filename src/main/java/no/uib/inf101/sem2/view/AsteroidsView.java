@@ -72,7 +72,6 @@ public class AsteroidsView extends JPanel {
         }
     }
 
-
     /**
      *  Method responsible for drawing all the characters related to the actual game itself.
      * @param g2d
@@ -86,11 +85,9 @@ public class AsteroidsView extends JPanel {
 
         // Only draw the ship if the game is not over.
         if (!(asteroidsModel.getGameState() == GameState.GAME_OVER)) {
-            if (playerShip.isVisible()) {
-                drawCharacter(g2d, playerShip);
-                if (playerShip.isAccelerating()) {
-                    drawFlame(g2d, playerShip);
-                }
+            drawCharacter(g2d, playerShip);
+            if (playerShip.isAccelerating()) {
+                drawFlame(g2d, playerShip);
             }
         }
 
@@ -174,14 +171,16 @@ public class AsteroidsView extends JPanel {
         g2d.drawPolygon(xPoints, yPoints, numPoints);
     }
 
-
+    /** Draws a flame at the back of the ship.
+     * @param g2d
+     * @param playerShip
+     */
     private void drawFlame(Graphics2D g2d, PlayerShip playerShip) {
-        float[][] fireShape = playerShip.getFireShape();
-        float[][] translatedFireShape = translateShape(fireShape, playerShip.getPosition());
+        float[][] flameShape = playerShip.getCurrentFlameShape();
 
-        int[] fireXPoints = Arrays.stream(translatedFireShape).mapToInt(point -> Math.round(point[0])).toArray();
-        int[] fireYPoints = Arrays.stream(translatedFireShape).mapToInt(point -> Math.round(point[1])).toArray();
-        g2d.drawPolygon(fireXPoints, fireYPoints, fireShape.length);
+        int[] flameXPoints = Arrays.stream(flameShape).mapToInt(point -> Math.round(point[0])).toArray();
+        int[] flameYPoints = Arrays.stream(flameShape).mapToInt(point -> Math.round(point[1])).toArray();
+        g2d.drawPolygon(flameXPoints, flameYPoints, flameShape.length);
     }
 
     /** Draws a game over screen.

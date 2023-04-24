@@ -181,6 +181,11 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         this.playerScore = 0;
     }
 
+    @Override
+    public void setShipAccelerationState(boolean accelerationState) {
+        this.player.setAccelerating(accelerationState);
+    }
+
     public void setMapDimensions(int newWidth, int newHeight) {
         this.mapWidth = newWidth;
         this.mapHeight = newHeight;

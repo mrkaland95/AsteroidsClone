@@ -8,11 +8,16 @@ public class PlayerShip extends BaseCharacter {
     private boolean accelerating;
     private boolean invulnerable;
 
-
     public PlayerShip(Vector2 startPosition) {
         this.setPosition(startPosition);
         this.setVelocity(new Vector2(0, 0));
         this.setCurrentShape(getBaseShape());
+
+        // Adjusting the shape's center
+        Vector2 center = calculateCenter(getBaseShape());
+        float[][] centeredShape = translateShape(getBaseShape(), -center.x(), -center.y());
+        setCurrentShape(centeredShape);
+
         this.accelerating = false;
         this.invulnerable = false;
 
@@ -31,15 +36,28 @@ public class PlayerShip extends BaseCharacter {
     /** Gets the fire shape of the ship.
      * @return
      */
-    public float[][] getFireShape() {
-        return new float[][]{
-            {0.5f, -1f},
-            {1f, 0f},
-            {0.5f, 1f},
-            {-0.5f, 1f},
-            {-1f, 0f},
-            {-0.5f, -1f},
+    public float[][] getFireBaseShape() {
+        float[][] flameShape = new float[][] {
+            {0, 15},
+            {-8, 3},
+            {8, 3},
         };
+
+        return flameShape;
+    }
+
+    /** Gets the current state of the flame, including angle and position.
+     * @return
+     */
+    public float[][] getCurrentFlameShape() {
+        // Rotate the flame shape based on the current angle of the ship
+        Vector2 centerPoint = calculateCenter(getCurrentShape());
+        float[][] rotatedFlameShape = rotateShape(getFireBaseShape(), getCurrentAngle(), centerPoint);
+
+        // Translate the flame shape to the position of the ship
+        float[][] translatedFlameShape = translateShape(rotatedFlameShape, getPosition().x(), getPosition().y());
+
+        return translatedFlameShape;
     }
 
     /**
@@ -79,11 +97,7 @@ public class PlayerShip extends BaseCharacter {
         }
 
         this.setVelocity(newVelocity);
-        // Sets the acceleration to true if the acceleration is greater or lesser than 0.
-        // Variable used for tracking whether the "flame" graphics should be drawn or not.
-        this.setAccelerating((acceleration != 0f));
     }
-
 
     /** Gets the state of whether the ship is invulnerable or not.
      * @return

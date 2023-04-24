@@ -57,6 +57,9 @@ public class AsteroidController implements KeyListener {
         // Accelerates the player's ship.
         if (upArrowPressed) {
             asteroidsModel.accelerateShip(updateInterval);
+            asteroidsModel.setShipAccelerationState(true);
+        } else {
+            asteroidsModel.setShipAccelerationState(false);
         }
         // Rotate the ship, if and only if, one of the keys is pressed at a time.
         if (!(leftArrowPressed && rightArrowPressed)) {
@@ -91,8 +94,6 @@ public class AsteroidController implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             this.spaceBarPressed = true;
         }
-
-
     }
     @Override
     public void keyReleased(KeyEvent e) {

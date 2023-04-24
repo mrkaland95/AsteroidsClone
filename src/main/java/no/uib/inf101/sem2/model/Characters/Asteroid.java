@@ -6,7 +6,6 @@ public class Asteroid extends BaseCharacter {
     private float degreesOfRotationPerSecond;
     private float baseSize;
 
-
     public Asteroid(Vector2 startPosition, Vector2 startVelocity, float rotationPerSecond, float baseSize) {
         this.setCurrentShape(getBaseShape());
         this.setPosition(startPosition);
@@ -27,7 +26,6 @@ public class Asteroid extends BaseCharacter {
         this.scaleCurrentShape(getSizeScalar());
         this.rotateCurrentShape(startingAngle);
     }
-
 
     /**
      *  Generates random shape, roughly looking like a sphere,

@@ -15,7 +15,6 @@ public abstract class BaseCharacter {
     private float[][] currentShape;
     private float currentAngle;
     private float sizeScalar;
-    private boolean visible = true;
 
     /** Defines the base shape of the character, defined as points,
      *  where lines will be drawn between these points to render a shape.
@@ -123,7 +122,6 @@ public abstract class BaseCharacter {
         this.setPosition(new Vector2(posX, posY));
     }
 
-
     /** Scales the shape stored in the character by a scalefactor.
      * @param scaleFactor
      */
@@ -131,7 +129,6 @@ public abstract class BaseCharacter {
         this.sizeScalar = scaleFactor;
         this.currentShape = this.scaleShape(this.currentShape, scaleFactor);
     }
-
 
     /**
      * Accelerates the character by the given amount per second.
@@ -221,11 +218,26 @@ public abstract class BaseCharacter {
         return true;
     }
 
+    /** Translates a shape by the given deltas.
+     * @param shape
+     * @param deltaX
+     * @param deltaY
+     * @return
+     */
+    public float[][] translateShape(float[][] shape, float deltaX, float deltaY) {
+        float[][] translatedShape = new float[shape.length][2];
+        for (int i = 0; i < shape.length; i++) {
+            translatedShape[i][0] = shape[i][0] + deltaX;
+            translatedShape[i][1] = shape[i][1] + deltaY;
+        }
+        return translatedShape;
+    }
+
     /** Utility method used to rotate the points in a shape by a given angle.
      * ChatGPT was used for figuring this one out
      * @param angle
      */
-    private static float[][] rotateShape(float[][] points, float angle, Vector2 centerPosition) {
+    static float[][] rotateShape(float[][] points, float angle, Vector2 centerPosition) {
         float[][] rotatedPoints = new float[points.length][2];
         double radians = Math.toRadians(angle);
         float cosAngle = (float) Math.cos(radians);
@@ -244,7 +256,8 @@ public abstract class BaseCharacter {
      *
      * @param points
      */
-    private static Vector2 calculateCenter(float[][] points) {
+
+    static Vector2 calculateCenter(float[][] points) {
         float[] center = {0, 0};
 
         for (float[] point : points) {
@@ -256,20 +269,6 @@ public abstract class BaseCharacter {
         center[1] /= points.length;
 
         return new Vector2(center[0], center[1]);
-    }
-
-    /** Getter for whether the object should be visible or not.
-     * @return
-     */
-    public boolean isVisible() {
-        return visible;
-    }
-
-    /** Setter for whether the object should be visible or not.
-     * @param visible
-     */
-    public void setVisible(boolean visible) {
-        this.visible = visible;
     }
 
     /** Scales an object by the given width and height scales.
