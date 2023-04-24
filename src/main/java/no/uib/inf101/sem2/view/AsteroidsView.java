@@ -203,37 +203,4 @@ public class AsteroidsView extends JPanel {
         float newGameTextWidth = (float) g2d.getFontMetrics().getStringBounds(newGameText, g2d).getWidth();
         g2d.drawString(newGameText, getWidth() / 2f - newGameTextWidth / 2, getHeight() / 2f + 50);
     }
-
-    private float[][] translateShape(float[][] shape, Vector2 translation) {
-        float[][] translatedShape = new float[shape.length][2];
-
-        for (int i = 0; i < shape.length; i++) {
-            translatedShape[i][0] = shape[i][0] + translation.x();
-            translatedShape[i][1] = shape[i][1] + translation.y();
-        }
-
-        return translatedShape;
-    }
-
-    /**
-     * I know there is a method that already does this in "Inf101graphics", but you can't change the font or size
-     * in that one.
-     * @param g2d
-     * @param string
-     * @param point
-     */
-    private void drawCenteredString(Graphics2D g2d, String string, Point2D point) {
-        Font font = new Font("Arial", Font.BOLD, 40 * 2);
-        FontMetrics fontMetrics = g2d.getFontMetrics(font);
-
-        int textWidth = fontMetrics.stringWidth(string);
-        int textHeight = fontMetrics.getHeight();
-
-        int x = (int) ((point.getX() - textWidth) / 2);
-        int y = (int) ((point.getY() - textHeight) / 2);
-
-        g2d.setFont(font);
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(string, x, y);
-    }
 }

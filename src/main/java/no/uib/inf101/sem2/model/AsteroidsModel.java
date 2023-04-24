@@ -19,7 +19,7 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     private final PlayerShip player;
     private GameState gameState;
     private final CharacterFactory characterFactory;
-    private final List<Asteroid> asteroidList = new ArrayList<>();
+    private List<Asteroid> asteroidList = new ArrayList<>();
     private List<Bullet> bulletList = new ArrayList<>();
     private int mapWidth;
     private int mapHeight;
@@ -179,6 +179,10 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         this.gameState = GameState.ACTIVE_GAME;
         this.playerLives = Settings.INITIAL_PLAYER_LIVES;
         this.playerScore = 0;
+        this.player.setPosition(new Vector2(this.mapWidth / 2f, this.mapHeight / 2f));
+        this.player.setVelocity(new Vector2(0, 0));
+        this.asteroidList = new ArrayList<>();
+        this.bulletList = new ArrayList<>();
     }
 
     @Override
@@ -214,6 +218,9 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         return distance > MIN_SPAWN_DISTANCE_FROM_SHIP;
     }
 
+    /**
+     * Generates new asteroids, up to the maximum amount allowed. Only allows asteroids that are not too close to the player.
+     */
     void generateNewAsteroids() {
         if (asteroidList.size() < MINIMUM_ASTEROID_COUNT) {
             int asteroidsToSpawn = MAXIMUM_ASTEROID_COUNT - asteroidList.size();
