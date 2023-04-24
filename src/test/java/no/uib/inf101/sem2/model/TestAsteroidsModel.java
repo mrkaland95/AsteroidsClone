@@ -1,20 +1,21 @@
-package no.uib.inf101.sem2.model.Characters;
+package no.uib.inf101.sem2.model;
 
-import no.uib.inf101.sem2.model.AsteroidsModel;
+import no.uib.inf101.sem2.model.Characters.Asteroid;
+import no.uib.inf101.sem2.model.Characters.Bullet;
+import no.uib.inf101.sem2.model.Characters.PlayerShip;
 import no.uib.inf101.sem2.model.Factories.CharacterFactory;
 import no.uib.inf101.sem2.model.Factories.RandomCharacterFactory;
-import no.uib.inf101.sem2.model.Settings;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAsteroidsModel {
     private AsteroidsModel asteroidsModel;
+
 
     @BeforeEach
     public void setUp() {
@@ -101,6 +102,40 @@ public class TestAsteroidsModel {
         // Check the updated bullet list
         List<Bullet> updatedBulletList = asteroidsModel.getBulletList();
         assertEquals(1, updatedBulletList.size(), "Bullet list should contain 1 bullet after firing.");
+    }
+
+
+    @Test
+    public void testCheckValidAsteroidSpawn() {
+        Asteroid asteroid = new Asteroid(new Vector2(300, 300), new Vector2(0, 0), 2f, 1f); // Example asteroid
+
+        // Change the position of the player to a known location
+        asteroidsModel.getPlayerShip().setPosition(new Vector2(100, 100));
+
+        // Test that the asteroid is not too close to the player
+        assertTrue(asteroidsModel.checkValidAsteroidSpawn(asteroid));
+
+        // Test that the asteroid is too close to the player
+        asteroid.setPosition(new Vector2(120, 120));
+        assertFalse(asteroidsModel.checkValidAsteroidSpawn(asteroid));
+    }
+
+    @Test
+    public void testGenerateNewAsteroids() {
+
+        // Check that there are no asteroids initially
+        assertEquals(0, asteroidsModel.getAsteroidList().size());
+
+        // Generate new asteroids
+        asteroidsModel.generateNewAsteroids();
+
+        // Check that the asteroid count is now equal to MAXIMUM_ASTEROID_COUNT
+        assertEquals(Settings.MAXIMUM_ASTEROID_COUNT, asteroidsModel.getAsteroidList().size());
+
+        // Ensure that all spawned asteroids are not too close to the player
+        for (Asteroid asteroid : asteroidsModel.getAsteroidList()) {
+            assertTrue(asteroidsModel.checkValidAsteroidSpawn(asteroid));
+        }
     }
 }
 

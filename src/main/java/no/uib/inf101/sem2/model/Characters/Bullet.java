@@ -13,7 +13,7 @@ public class Bullet extends BaseCharacter {
     }
 
     @Override
-    protected float[][] getBaseShape() {
+    public float[][] getBaseShape() {
         // Shape of a small square
         float[][] shape = {
             {-1, -1},

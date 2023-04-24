@@ -18,6 +18,11 @@ public record Vector2(float x, float y) {
         return Math.sqrt(x * x + y * y);
     }
 
+    /** Translates this vector by the specified distances and returns a new one.
+     * @param dx
+     * @param dy
+     * @return
+     */
     public Vector2 translate(float dx, float dy) {
         float x = this.x();
         float y = this.y();

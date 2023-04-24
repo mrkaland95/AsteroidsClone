@@ -1,19 +1,23 @@
 package no.uib.inf101.sem2.model.Characters;
 
+import no.uib.inf101.sem2.model.Settings;
 import no.uib.inf101.sem2.model.Utils.Vector2;
 
 
 public class PlayerShip extends BaseCharacter {
     private boolean accelerating;
+    private boolean invulnerable;
+
 
     public PlayerShip(Vector2 startPosition) {
         this.setPosition(startPosition);
         this.setVelocity(new Vector2(0, 0));
         this.setCurrentShape(getBaseShape());
         this.accelerating = false;
-    }
+        this.invulnerable = false;
 
-    protected float[][] getBaseShape() {
+    }
+    public float[][] getBaseShape() {
         float[][] shape = {
             {0f,  -10f},
             {10f,  10f},
@@ -23,6 +27,10 @@ public class PlayerShip extends BaseCharacter {
 
         return shape;
     }
+
+    /** Gets the fire shape of the ship.
+     * @return
+     */
     public float[][] getFireShape() {
         return new float[][]{
             {0.5f, -1f},
@@ -54,22 +62,53 @@ public class PlayerShip extends BaseCharacter {
 
     @Override
     public void accelerate(float acceleration, double deltaTime) {
-        // Beacuse the angle starts paralel to the x axis, we need to subtract by 90 degrees.
+        // Beacuse the angle starts parallel to the x axis, we need to subtract by 90 degrees.
         double radians = Math.toRadians(getCurrentAngle() - 90d);
 
         float thrustX = (float) (acceleration * Math.cos(radians));
         float thrustY = (float) (acceleration * Math.sin(radians));
-        this.setVelocity(Vector2.translateOverTime(getVelocity(), new Vector2(thrustX, thrustY), deltaTime));
+        Vector2 newVelocity = Vector2.translateOverTime(getVelocity(), new Vector2(thrustX, thrustY), deltaTime);
+
+        // Velocity limit
+        float maxVelocity = Settings.SHIP_VELOCITY_LIMIT;
+        float velocityMagnitude = (float) Math.sqrt(newVelocity.x() * newVelocity.x() + newVelocity.y() * newVelocity.y());
+
+        if (velocityMagnitude > maxVelocity) {
+            newVelocity = new Vector2(newVelocity.x() * (maxVelocity / velocityMagnitude),
+                                      newVelocity.y() * (maxVelocity / velocityMagnitude));
+        }
+
+        this.setVelocity(newVelocity);
         // Sets the acceleration to true if the acceleration is greater or lesser than 0.
         // Variable used for tracking whether the "flame" graphics should be drawn or not.
         this.setAccelerating((acceleration != 0f));
     }
 
 
+    /**
+     * @return
+     */
+    public boolean isInvulnerable() {
+        return invulnerable;
+    }
+
+    /**
+     * @param invulnerable
+     */
+    public void setInvulnerable(boolean invulnerable) {
+        this.invulnerable = invulnerable;
+    }
+
+    /** Gets the ships state of acceleration.
+     * @return
+     */
     public boolean isAccelerating() {
         return accelerating;
     }
 
+    /** Sets the ships state of acceleration
+     * @param accelerating
+     */
     public void setAccelerating(boolean accelerating) {
         this.accelerating = accelerating;
     }

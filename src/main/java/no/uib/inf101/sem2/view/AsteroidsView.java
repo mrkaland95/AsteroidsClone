@@ -8,6 +8,7 @@ import no.uib.inf101.sem2.model.Utils.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
@@ -40,8 +41,11 @@ public class AsteroidsView extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         drawGameBorder(g2);
         drawGame(g2);
-        drawScore(g2);
-//        drawPlayerLives(g2);
+        drawPlayerLives(g2);
+        if (asteroidsModel.getGameState() == GameState.ACTIVE_GAME) {
+            drawScore(g2);
+        }
+        // TODO draw gameover score.
     }
 
 
@@ -58,17 +62,19 @@ public class AsteroidsView extends JPanel {
 
         // Only draw the ship if the game is not over.
         if (!(asteroidsModel.getGameState() == GameState.GAME_OVER)) {
-            drawCharacter(g2d, playerShip);
-            if (playerShip.isAccelerating()) {
-                drawFlame(g2d, playerShip);
+            if (playerShip.isVisible()) {
+                drawCharacter(g2d, playerShip);
+                if (playerShip.isAccelerating()) {
+                    drawFlame(g2d, playerShip);
+                }
             }
         }
 
-
+        // Draw asteroids
         for (BaseCharacter asteroid : asteroidsModel.getAsteroidList()) {
             drawCharacter(g2d, asteroid);
         }
-
+        // Draw bullets
         for (BaseCharacter bullet : asteroidsModel.getBulletList()) {
             drawCharacter(g2d, bullet);
         }
@@ -80,19 +86,29 @@ public class AsteroidsView extends JPanel {
     private void drawScore(Graphics2D g2d) {
         String score = "Score: " + asteroidsModel.getScore();
         Point2D point = new Point(this.getWidth() / 2, 40);
+        System.out.println(this.getHeight());
         Inf101Graphics.drawCenteredString(g2d, score, point);
     }
 
+    /**
+     * Uses the player ship as an icon indicating how many lives the player has left.
+     * @param g2d
+     */
     private void drawPlayerLives(Graphics2D g2d) {
         PlayerShip player = asteroidsModel.getPlayerShip();
-        float[][] baseShape = player.getCurrentShape();
-        int spacing = 20;
+        float[][] baseShape = player.getBaseShape();
+        int spacing = 50;
         int iconSize = 15;
         float scale = (float) iconSize / 10f; // Since the original ship shape has a height of 10
 
+        g2d.setFont(new Font("Arial", Font.PLAIN, 12));
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("Player Lives:", spacing, spacing - 10);
+
+        AffineTransform originalTransform = g2d.getTransform(); // Save the original transform
+
         for (int i = 0; i < asteroidsModel.getPlayerLives(); i++) {
-//            g2d.save();
-            g2d.translate(i * (iconSize + spacing), spacing);
+            g2d.translate(i * (iconSize + spacing) + spacing, spacing);
             g2d.scale(scale, scale);
 
             Path2D lifeShape = new Path2D.Float();
@@ -105,8 +121,11 @@ public class AsteroidsView extends JPanel {
             lifeShape.closePath();
             g2d.setColor(Color.WHITE);
             g2d.fill(lifeShape);
-//            g2d.restore();
-    }
+
+            g2d.setTransform(originalTransform); // Restore the original transform
+        }
+
+
 
     }
 
@@ -114,6 +133,10 @@ public class AsteroidsView extends JPanel {
         this.getHeight();
     }
 
+    /** Draws a game object to the screen, according to it's shape and position.
+     * @param g2d
+     * @param character
+     */
     private void drawCharacter(Graphics2D g2d, BaseCharacter character) {
         float[][] points = character.getCurrentShape();
         int numPoints = points.length;

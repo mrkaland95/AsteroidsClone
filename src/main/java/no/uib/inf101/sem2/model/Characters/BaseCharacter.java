@@ -15,13 +15,14 @@ public abstract class BaseCharacter {
     private float[][] currentShape;
     private float currentAngle;
     private float sizeScalar;
+    private boolean visible = true;
 
     /** Defines the base shape of the character, defined as points,
      *  where lines will be drawn between these points to render a shape.
      *  The shape should be drawn upwards/"North" if not symmetrical.
      * @return
      */
-    protected abstract float[][] getBaseShape();
+    public abstract float[][] getBaseShape();
 
     /**
      * Gets the state of the current shape of the object, including it's rotated, and scaled state.
@@ -72,7 +73,7 @@ public abstract class BaseCharacter {
         return currentAngle;
     }
 
-    /** Sets the angle the object should point towards.
+    /** Sets the angle the object is pointing towards.
      * @param currentAngle
      */
     public void setCurrentAngle(float currentAngle) {
@@ -81,9 +82,19 @@ public abstract class BaseCharacter {
     public float getSizeScalar() {
         return sizeScalar;
     }
+
+    /** Sets the scalar that the object should be scaled by.
+     * @param sizeScalar
+     */
     public void setSizeScalar(float sizeScalar) {
         this.sizeScalar = sizeScalar;
     }
+
+    /** Moves the character according to its velocity.
+     * @param deltaTime The amount of time passed since last update
+     * @param mapWidth The width of the map
+     * @param mapHeight The height of the map
+     */
     public void move(double deltaTime, int mapWidth, int mapHeight) {
         this.position = Vector2.translateOverTime(this.position, this.velocity, deltaTime);
         this.wrapAround(mapWidth, mapHeight);
@@ -247,4 +258,17 @@ public abstract class BaseCharacter {
         return new Vector2(center[0], center[1]);
     }
 
+    /** Getter for whether the object should be visible or not.
+     * @return
+     */
+    public boolean isVisible() {
+        return visible;
+    }
+
+    /** Setter for whether the object should be visible or not.
+     * @param visible
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }

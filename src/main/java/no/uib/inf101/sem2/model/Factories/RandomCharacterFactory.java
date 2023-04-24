@@ -1,6 +1,5 @@
 package no.uib.inf101.sem2.model.Factories;
 import no.uib.inf101.sem2.model.Characters.Asteroid;
-import no.uib.inf101.sem2.model.Characters.BaseCharacter;
 import no.uib.inf101.sem2.model.Characters.UFO;
 import no.uib.inf101.sem2.model.Settings;
 import no.uib.inf101.sem2.model.Utils.Vector2;
@@ -11,7 +10,7 @@ import java.util.Random;
 
 public class RandomCharacterFactory implements CharacterFactory {
     Random random = new Random();
-    float velocityUpperLimit = 30f;
+    float velocityUpperLimit = Settings.ASTEROID_VELOCITY_LIMIT;
 
 
     @Override
@@ -24,8 +23,9 @@ public class RandomCharacterFactory implements CharacterFactory {
      * @return
      */
     private Asteroid getRandomLargeAsteroid() {
-        float mapWidth = Settings.mapWidth;
-        float mapHeight = Settings.mapHeight;
+        float mapWidth = Settings.MAP_WIDTH;
+        float mapHeight = Settings.MAP_HEIGHT;
+
 
         float startRotation = random.nextFloat(-50, 50);
         Vector2 startPosition = new Vector2(random.nextFloat(0, mapWidth), random.nextFloat(0, mapHeight));
@@ -37,9 +37,10 @@ public class RandomCharacterFactory implements CharacterFactory {
         return null;
     }
 
+
+
     @Override
     public List<Asteroid> getSmallAsteroidPair(Vector2 startPosition) {
-        float velocityUpperLimit = 40f;
         List<Asteroid> asteroids = new ArrayList<>();
         float startRotation = random.nextFloat(-100, 100);
         // Makes the asteroids velocity go towards the left.

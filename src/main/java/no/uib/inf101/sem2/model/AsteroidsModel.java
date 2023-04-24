@@ -2,7 +2,6 @@ package no.uib.inf101.sem2.model;
 
 import no.uib.inf101.sem2.controller.ControllableAsteroidModel;
 import no.uib.inf101.sem2.model.Characters.Asteroid;
-import no.uib.inf101.sem2.model.Characters.BaseCharacter;
 import no.uib.inf101.sem2.model.Characters.Bullet;
 import no.uib.inf101.sem2.model.Characters.PlayerShip;
 import no.uib.inf101.sem2.model.Factories.CharacterFactory;
@@ -12,18 +11,21 @@ import no.uib.inf101.sem2.view.ViewableAsteroidsModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.uib.inf101.sem2.model.Settings.*;
+
 public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAsteroidModel {
-    private int elapsedGameTime;
     private int playerScore;
     private int playerLives;
     private final PlayerShip player;
     private GameState gameState;
     private final CharacterFactory characterFactory;
-    private List<BaseCharacter> UFOList = new ArrayList<>();
-    private List<Asteroid> asteroidList = new ArrayList<>();
+//    private List<BaseCharacter> UFOList = new ArrayList<>();
+    private final List<Asteroid> asteroidList = new ArrayList<>();
     private List<Bullet> bulletList = new ArrayList<>();
     private final int mapWidth;
     private final int mapHeight;
+    private float invulnerableTime;
+
 
 
     /** Constructor for the model holding the game state.
@@ -31,56 +33,19 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
      */
     public AsteroidsModel(CharacterFactory characterFactory) {
         this.characterFactory = characterFactory;
-        this.elapsedGameTime = 0;
-        this.mapWidth = Settings.mapWidth;
-        this.mapHeight = Settings.mapHeight;
+        this.mapWidth = Settings.MAP_WIDTH;
+        this.mapHeight = Settings.MAP_HEIGHT;
         this.playerScore = 0;
         this.playerLives = 3;
+        this.invulnerableTime = 0f;
         this.player = new PlayerShip(new Vector2(this.mapWidth / 2f, this.mapHeight / 2f));
         this.gameState = GameState.ACTIVE_GAME;
-
-
-        // Initialize asteroids.
-        int asteroidCount = Settings.MAXIMUM_ASTEROID_COUNT;
-        for (int i = 0; i < asteroidCount; i++) {
-            asteroidList.add(this.characterFactory.getLargeAsteroid());
-        }
-    }
-    @Override
-    public GameState getGameState() {
-        return this.gameState;
-    }
-
-    @Override
-    public PlayerShip getPlayerShip() {
-        return player;
-    }
-    @Override
-    public List<Asteroid> getAsteroidList() {
-        return asteroidList;
-    }
-
-    @Override
-    public void accelerateShip(double deltaTime) {
-        float shipAccelerationPerSecond = Settings.SHIP_ACCELERATION_PER_SECOND;
-        this.player.accelerate(shipAccelerationPerSecond, deltaTime);
-    }
-
-    @Override
-    public void rotateShip(double deltaTime, float angle) {
-        this.player.rotateCurrentShape(angle);
-    }
-
-    @Override
-    public void fireFromShip(double deltaTime) {
-        float bulletVelocity = Settings.BULLET_VELOCITY_PER_SECOND;
-        bulletList.add(this.player.shootBullet(bulletVelocity));
     }
 
     @Override
     public void update(double deltaTime) {
         // Since the game happens in space, objects should drift with a constant velocity.
-        this.player.move(deltaTime, mapWidth, mapHeight);
+        player.move(deltaTime, mapWidth, mapHeight);
 
         // Move and rotate the asteroids
         for (Asteroid asteroid : asteroidList) {
@@ -108,9 +73,9 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
                 if (bullet.collisionOccurred(asteroid)) {
                     bulletsToRemove.add(bullet);
                     asteroidsToRemove.add(asteroid);
-                    playerScore += Settings.ASTEROID_KILLED_SCORE;
+                    playerScore += ASTEROID_KILLED_SCORE;
 
-                    // If a large asteroid was destroyed, spawn 2 smaller ones.
+                    // If a large asteroid was destroyed, spawn 2 smaller ones at the position of the large one.
                     if (asteroid.getBaseSize() >= 2) {
                         List<Asteroid> smallAsteroids = characterFactory.getSmallAsteroidPair(asteroid.getPosition());
                         asteroidsToAdd.addAll(smallAsteroids);
@@ -118,26 +83,71 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
                 }
             }
         }
-        // Remove objects that have collided, and spawn smaller asteroids if relevant.
+
+        // Remove objects that have collided, and spawn smaller asteroids if applicable.
         bulletList.removeAll(bulletsToRemove);
         asteroidList.removeAll(asteroidsToRemove);
         asteroidList.addAll(asteroidsToAdd);
 
 
-        asteroidsToRemove = new ArrayList<>();
-        // Handle player -> asteroid collisions. Reduce the players lives when collisions happen
-        for (Asteroid asteroid : asteroidList) {
-            if (player.collisionOccurred(asteroid)) {
-                asteroidsToRemove.add(asteroid);
-                playerLives -= 1;
+        if (invulnerableTime > 0) {
+            invulnerableTime -= deltaTime;
+            if (invulnerableTime <= 0) {
+                player.setInvulnerable(false);
             }
         }
-        System.out.println(playerLives);
 
-//        asteroidList.removeAll(asteroidsToRemove);
-//        if (playerLives <= 0) {
-//            this.gameState = GameState.GAME_OVER;
-//        }
+        asteroidsToRemove = new ArrayList<>();
+        // Handle player -> asteroid collisions. Reduce the players lives when collisions happen
+        // And respawn the player to the center of the map.
+        if (!player.isInvulnerable()) {
+            for (Asteroid asteroid : asteroidList) {
+                if (asteroid.collisionOccurred(player)) {
+                    asteroidsToRemove.add(asteroid);
+                    playerLives -= 1;
+                    player.setPosition(new Vector2(mapWidth / 2f, mapHeight / 2f));
+                    player.setVelocity(new Vector2(0, 0));
+                    player.setInvulnerable(true);
+                    invulnerableTime = 2f; // Set respawn time (in seconds)
+                    break;
+                }
+            }
+        }
+
+        asteroidList.removeAll(asteroidsToRemove);
+        if (playerLives <= 0) {
+            this.gameState = GameState.GAME_OVER;
+        }
+        // Creates new asteroids if too many has been destroyed.
+        generateNewAsteroids();
+    }
+    @Override
+    public GameState getGameState() {
+        return this.gameState;
+    }
+
+    @Override
+    public PlayerShip getPlayerShip() {
+        return player;
+    }
+    @Override
+    public List<Asteroid> getAsteroidList() {
+        return asteroidList;
+    }
+
+    @Override
+    public void accelerateShip(double deltaTime) {
+        player.accelerate(SHIP_ACCELERATION_PER_SECOND, deltaTime);
+    }
+
+    @Override
+    public void rotateShip(double deltaTime, float angle) {
+        player.rotateCurrentShape(angle);
+    }
+
+    @Override
+    public void fireFromShip(double deltaTime) {
+        bulletList.add(this.player.shootBullet(BULLET_VELOCITY_PER_SECOND));
     }
 
     @Override
@@ -153,5 +163,34 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     @Override
     public List<Bullet> getBulletList() {
         return bulletList;
+    }
+
+    /** Helper method to ensure an asteroid doesn't spawn too close to a player.
+     * @param asteroid
+     * @return
+     */
+    boolean checkValidAsteroidSpawn(Asteroid asteroid) {
+        Vector2 playerPosition = player.getPosition();
+        Vector2 asteroidPosition = asteroid.getPosition();
+
+        double distance = Vector2.distance(playerPosition, asteroidPosition);
+        // Check if the distance is greater than the minimum spawn distance
+        return distance > MIN_SPAWN_DISTANCE;
+    }
+
+    void generateNewAsteroids() {
+        if (asteroidList.size() < MINIMUM_ASTEROID_COUNT) {
+            int asteroidsToSpawn = MAXIMUM_ASTEROID_COUNT - asteroidList.size();
+
+            for (int i = 0; i < asteroidsToSpawn; i++) {
+                Asteroid newAsteroid = characterFactory.getLargeAsteroid();
+
+                // Ensure that the asteroid is not too close to the player
+                while (!checkValidAsteroidSpawn(newAsteroid)) {
+                    newAsteroid = characterFactory.getLargeAsteroid();
+                }
+                asteroidList.add(newAsteroid);
+            }
+        }
     }
 }
