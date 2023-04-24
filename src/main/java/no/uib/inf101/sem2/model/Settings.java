@@ -9,16 +9,16 @@ public class Settings {
     static public final int MAP_WIDTH = 1000;
     static public final int MAP_HEIGHT = 500;
 
-    static public final int MAXIMUM_ASTEROID_COUNT = 30;
-    static public final int MINIMUM_ASTEROID_COUNT = 5;
+    static public final int MAXIMUM_ASTEROID_COUNT = 33;
+    static public final int MINIMUM_ASTEROID_COUNT = 8;
 
     static public final int ASTEROID_KILLED_SCORE = 50;
     static public final int UFO_KILLED_SCORE = 100;
 
     static public final float BULLET_VELOCITY_PER_SECOND = 400f;
     static public final float SHIP_MAX_VELOCITY = 100f;
-    static public final float ASTEROID_MAX_VELOCITY = 65f;
-    static public final float DEGREES_ROTATED_PER_TICK = 3f;
+    static public final float ASTEROID_MAX_VELOCITY = 75f;
+    static public final float DEGREES_ROTATED_PER_SECOND = 240f;
     static public final float SHIP_ACCELERATION_PER_SECOND = 100f;
 
     static public final float MIN_SPAWN_DISTANCE_FROM_SHIP = 100f;

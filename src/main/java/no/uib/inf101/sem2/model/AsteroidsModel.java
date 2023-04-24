@@ -19,11 +19,10 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     private final PlayerShip player;
     private GameState gameState;
     private final CharacterFactory characterFactory;
-//    private List<BaseCharacter> UFOList = new ArrayList<>();
     private final List<Asteroid> asteroidList = new ArrayList<>();
     private List<Bullet> bulletList = new ArrayList<>();
-    private final int mapWidth;
-    private final int mapHeight;
+    private int mapWidth;
+    private int mapHeight;
     private float invulnerableTime;
 
 
@@ -118,7 +117,7 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
         if (playerLives <= 0) {
             this.gameState = GameState.GAME_OVER;
         }
-        // Creates new asteroids if too many has been destroyed.
+        // Creates new asteroids if at the start of the game, or too many has been destroyed.
         generateNewAsteroids();
     }
     @Override
@@ -142,7 +141,8 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
 
     @Override
     public void rotateShip(double deltaTime, float angle) {
-        player.rotateCurrentShape(angle);
+        float effectiveAngle = (float) (angle * deltaTime);
+        player.rotateCurrentShape(effectiveAngle);
     }
 
     @Override
@@ -163,6 +163,31 @@ public class AsteroidsModel implements ViewableAsteroidsModel, ControllableAster
     @Override
     public List<Bullet> getBulletList() {
         return bulletList;
+    }
+
+    @Override
+    public int getMapHeight() {
+        return mapHeight;
+    }
+    @Override
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+
+    public void setMapDimensions(int newWidth, int newHeight) {
+        this.mapWidth = newWidth;
+        this.mapHeight = newHeight;
+    }
+
+    public void scaleAllGameObjects(float widthScale, float heightScale) {
+        player.scale(widthScale, heightScale);
+        for (Asteroid asteroid : asteroidList) {
+            asteroid.scale(widthScale, heightScale);
+        }
+        for (Bullet bullet : bulletList) {
+            bullet.scale(widthScale, heightScale);
+        }
     }
 
     /** Helper method to ensure an asteroid doesn't spawn too close to a player.

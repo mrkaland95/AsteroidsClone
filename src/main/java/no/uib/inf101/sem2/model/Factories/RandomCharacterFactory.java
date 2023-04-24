@@ -33,17 +33,10 @@ public class RandomCharacterFactory implements CharacterFactory {
         return new Asteroid(startPosition, startVelocity, startRotation, 2);
     }
 
-    private Asteroid getSmallAsteroid() {
-        return null;
-    }
-
-
-
     @Override
     public List<Asteroid> getSmallAsteroidPair(Vector2 startPosition) {
         List<Asteroid> asteroids = new ArrayList<>();
         float startRotation = random.nextFloat(-100, 100);
-        // Makes the asteroids velocity go towards the left.
 
         // Creates velocities for the two asteroids, which will make them go in opposite directions, one to the right, one to the left.
         float randomNegativeXVelocity = random.nextFloat(-velocityUpperLimit, 0);

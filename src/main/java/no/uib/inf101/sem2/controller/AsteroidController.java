@@ -42,7 +42,7 @@ public class AsteroidController implements KeyListener {
     /** Method responsible for updating the state of the game, and performing inputs given by the player.
      */
     private void performTick(ActionEvent event) {
-        float shipDegreesRotated = Settings.DEGREES_ROTATED_PER_TICK;
+        float shipDegreesRotated = Settings.DEGREES_ROTATED_PER_SECOND;
         float updateInterval = Settings.getUpdateIntervalFloat();
 
         // Fire bullets from the ship

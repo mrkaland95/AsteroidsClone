@@ -85,7 +85,7 @@ public class PlayerShip extends BaseCharacter {
     }
 
 
-    /**
+    /** Gets the state of whether the ship is invulnerable or not.
      * @return
      */
     public boolean isInvulnerable() {

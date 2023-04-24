@@ -271,4 +271,26 @@ public abstract class BaseCharacter {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
+    /** Scales an object by the given width and height scales.
+     * @param widthScale
+     * @param heightScale
+     */
+    public void scale(float widthScale, float heightScale) {
+        // Scale position
+        Vector2 newPosition = new Vector2(position.x() * widthScale, position.y() * heightScale);
+        setPosition(newPosition);
+
+        // Scale velocity
+        Vector2 newVelocity = new Vector2(velocity.x() * widthScale, velocity.y() * heightScale);
+        setVelocity(newVelocity);
+
+        // Scale shape
+        float[][] newShape = new float[currentShape.length][2];
+        for (int i = 0; i < currentShape.length; i++) {
+            newShape[i][0] = currentShape[i][0] * widthScale;
+            newShape[i][1] = currentShape[i][1] * heightScale;
+        }
+        setCurrentShape(newShape);
+    }
 }

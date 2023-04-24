@@ -8,6 +8,8 @@ import no.uib.inf101.sem2.model.Utils.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -21,9 +23,7 @@ public class AsteroidsView extends JPanel {
     private final int windowWidth = 1000;
     private final int windowHeight = 700;
     private final Color backgroundColor = new Color(0, 0, 0);
-    private final Color frameColor = new Color(1, 1, 1);
-    private final int mapWidth = 2000;
-    private final int mapHeight = 2000;
+    private static final int BORDER_MARGIN = 2;
 
 
     public AsteroidsView(ViewableAsteroidsModel asteroidsModel) {
@@ -33,6 +33,29 @@ public class AsteroidsView extends JPanel {
         this.setBackground(backgroundColor);
 
         this.asteroidsModel = asteroidsModel;
+        this.addComponentListener(new ComponentAdapter() {
+
+            // This is a little wonky, but essentially resizes the game map when the window gets resized
+            // It creates some problems, but I didn't have time to do it over again with a better solution.
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int oldWidth = asteroidsModel.getMapWidth();
+                int oldHeight = asteroidsModel.getMapHeight();
+
+                // Update the dimensions of the model based on the new size of the view
+                int newWidth = getWidth();
+                int newHeight = getHeight();
+                asteroidsModel.setMapDimensions(newWidth, newHeight);
+
+                float widthScale = (float) newWidth / oldWidth;
+                float heightScale = (float) newHeight / oldHeight;
+
+                float scaleFactor = Math.min(widthScale, heightScale);
+
+                // Scale all game objects with the same factor to maintain their aspect ratio
+                asteroidsModel.scaleAllGameObjects(scaleFactor, scaleFactor);
+            }
+        });
     }
 
     @Override
@@ -97,13 +120,13 @@ public class AsteroidsView extends JPanel {
     private void drawPlayerLives(Graphics2D g2d) {
         PlayerShip player = asteroidsModel.getPlayerShip();
         float[][] baseShape = player.getBaseShape();
-        int spacing = 50;
+        int spacing = 45;
         int iconSize = 15;
         float scale = (float) iconSize / 10f; // Since the original ship shape has a height of 10
 
         g2d.setFont(new Font("Arial", Font.PLAIN, 12));
         g2d.setColor(Color.WHITE);
-        g2d.drawString("Player Lives:", spacing, spacing - 10);
+        g2d.drawString("Player Lives remaining:", 50, 20);
 
         AffineTransform originalTransform = g2d.getTransform(); // Save the original transform
 
@@ -124,13 +147,12 @@ public class AsteroidsView extends JPanel {
 
             g2d.setTransform(originalTransform); // Restore the original transform
         }
-
-
-
     }
 
     private void drawGameBorder(Graphics2D g2d) {
-        this.getHeight();
+        // Draw the map border
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(BORDER_MARGIN, BORDER_MARGIN, getWidth() - 2 * BORDER_MARGIN, getHeight() - 2 * BORDER_MARGIN);
     }
 
     /** Draws a game object to the screen, according to it's shape and position.
